@@ -2,6 +2,7 @@ import pygame
 
 from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
+from map.texture import Button
 
 if __name__ == '__main__':
     pygame.init()
@@ -31,6 +32,16 @@ if __name__ == '__main__':
                                 struct = field.get_structure_by_mouse_pos(event.pos)
                                 if struct == "error":
                                     continue
+                                if isinstance(struct, Button):
+                                        state_engine.game = False
+                                        if struct.name == 'Menu':
+                                                state_engine.menu = True
+                                        elif struct.name == 'Buy':
+                                                pass
+                                        elif struct.name == 'Upgrade':
+                                                state_engine.shop = True
+                                        screen.fill((0, 0, 0))
+                                        continue
                                 field.replace_structure(struct, None)
                                 field.set_moving_structure(struct, event.pos)
                                 state_engine.objects_moving = True
@@ -39,7 +50,7 @@ if __name__ == '__main__':
                         if state_engine.objects_moving:
                             state_engine.objects_moving = False
                             field.finish_moving()
-                game.render()
+                game.field_game.render_structures(screen)
             elif state_engine.shop:
                 pass
             elif state_engine.menu:
