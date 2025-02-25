@@ -51,6 +51,7 @@ if __name__ == '__main__':
                             state_engine.objects_moving = False
                             field.finish_moving()
                 game.field_game.render_structures(screen)
+                game.render_text()
             elif state_engine.shop:
                 pass
             elif state_engine.menu:

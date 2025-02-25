@@ -164,7 +164,6 @@ class FieldShop(Field):
             button = Button(x)
             self.field[button.y][button.x] = button
 
-        self.money = 0
         self.d = 1
     def check_your_bust(self):
         pass
