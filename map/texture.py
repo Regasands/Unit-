@@ -1,4 +1,3 @@
-from os import SEEK_CUR, supports_bytes_environ
 import pygame
 
 
@@ -18,7 +17,7 @@ class Structure:
 class Button(Structure):
     def __init__(self, name):
         self.name = name
-        if name  == 'Start':
+        if name == 'Start':
             self.x, self.y = 4, 2
         elif name == 'Menu':
             self.x, self.y = -1, 0
@@ -30,13 +29,16 @@ class Button(Structure):
             self.x, self.y = -1, -1
         super().__init__(name)
 
+
 class Base(Structure):
     def __init__(self, key):
         super().__init__(f'base_{key}')
 
 
 class Mob(Structure):
-    def __init__(self, image_name):
+    def __init__(self, image_name, key: str, level: int):
+        self.key = key
+        self.level = level
         if image_name == 'Base_0':
             self.count_money = 100
             self.unique_id = 100
@@ -47,4 +49,22 @@ class Mob(Structure):
         super().__init__(image_name)
 
 
-tree = Mob
+grass = Mob("grass", "trees", 0)
+tall_grass = Mob("tall_grass", "trees", 1)
+berries = Mob("berries", "trees", 2)
+birch = Mob("birch", "trees", 3)
+spruce = Mob("spruce", "trees", 4)
+oak = Mob("oak", "trees", 5)
+super_oak = Mob("super_oak", "trees", 6)
+golden_oak = Mob("golden_oak", "trees", 7)
+
+trees = {0: grass,
+         1: tall_grass,
+         2: berries,
+         3: birch,
+         4: spruce,
+         5: oak,
+         6: super_oak,
+         7: golden_oak}
+
+keys = {"trees": trees}
