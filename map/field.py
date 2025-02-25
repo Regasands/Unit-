@@ -13,25 +13,29 @@ class Field:
         self.size = size
         self.width, self.height = size, size
         self.cell = 16
-        count = size // self.cell
+        self.count = size // self.cell
         self.count_x, self.count_y = count_x, count_y
-        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
+        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
         for x in range(self.count_x): 
                 for y in range(self.count_y):
-                        self.field[x + key][y + key] = Base(key)
+                    self.field[x + key][y + key] = Base(key)
 
     def render_structures(self, screen):
 
         self.structures_sprites = pygame.sprite.Group()
 
-        for x in range(rows):
-            for y  in range(cols):
+        for x in range(self.count):
+            for y  in range(self.count):
                 structure = self.field[y][x]
                 if structure is None:
                     continue
+                if isinstance(structure, Button):
+                    size = (200, 30)
+                else:
+                    size = (self.size, self.size)
                 sprite = pygame.sprite.Sprite()
                 sprite.image = pygame.transform.scale(
-                    structure.get_image(), self.cell)
+                    structure.get_image(), size) 
                 sprite.rect = pygame.Rect(
                     round(x * self.cell),
                     round(y * self.cell),
@@ -44,7 +48,7 @@ class Field:
         return self.structures_sprites
 
     def get_structure_by_mouse_pos(self, pos):
-        x, y = pos[x] // self.cell, pos[y] // self.cell
+        x, y = pos[0] // self.cell, pos[1] // self.cell
         return self.field[y][x]
 
     def replace_structure(self, target, new_value):
@@ -53,8 +57,6 @@ class Field:
             x, y = coords
             self.field[y][x] = new_value
             print(f"Элемент заменён в позиции: {x}, {y}")
-        else:
-            print("Элемент не найден, замена невозможна")
 
     def find_structure(self, target):
         for y, row in enumerate(self.field):  # Перебираем строки
@@ -76,26 +78,24 @@ class FieldMenu(Field):
         # Размеры
         self.size = size
         self.width, self.height = size, size
-        self.cell = 10
-        count = size // self.cell
+        self.cell = 100
+        self.count = size // self.cell
        #Поля
-        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
-        self.button_box = ['Start'] 
+        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
+        self.button_box = ['Start']
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
-            self.field[button.y][button.x] = button
-
 class FieldShop(Field):
     def __init__(self, size: int = 1600):
         # Размеры
         self.size = size
         self.width, self.height = size, size
         self.cell = 16
-        count = size // self.cell
+        self.count = size // self.cell
        
        #Поля
-        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
+        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
         self.button_box = []
         for x in self.button_box:
             button = Button(x)

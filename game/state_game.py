@@ -25,4 +25,4 @@ class Game:
                 self.field_game = field_game
                 self.field_menu = field_menu
                 self.field_shop = field_shop
-                
+                self.clock = pygame.time.Clock()
