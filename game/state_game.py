@@ -14,7 +14,9 @@ class State:
 
                 #shop
                 self.shop = False
-
+                
+                #game
+                self.game = False
 
 class Game:
         def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game) -> None:

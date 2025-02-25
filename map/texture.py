@@ -17,11 +17,11 @@ class Structure:
 
 class Button(Structure):
     def __init__(self, name):
-        if name = 'Menu':
+        if name  == 'Menu':
             self.x, self.y = 0, 0
         else:
             self.x, self.y = -1, -1
-        super.__init__(image_name)
+        super().__init__(name)
 
 class Base(Structure):
     def __init__(self, key):
@@ -37,4 +37,4 @@ class Mob(Structure):
         else:
             self.count_money = 10
             self.unical_id = 10
-        super.__init__(image_name)
+        super().__init__(image_name)

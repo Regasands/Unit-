@@ -72,33 +72,32 @@ class Field:
 
 
 class FieldMenu(Field):
-    def __init__(self, count_x: int, count_y: int, size: int = 1600):
+    def __init__(self, size: int = 1600):
         # Размеры
         self.size = size
         self.width, self.height = size, size
         self.cell = 10
         count = size // self.cell
-        self.count_x, self.count_y = count_x, count_y
-       
        #Поля
         self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
-        self.button_box = ['Start', 'Setting', 'NewGame']
-        for x in button_box:
-            button = Button(x) field[Button.y][button.x] = button
+        self.button_box = ['Start'] 
+        for x in self.button_box:
+            button = Button(x)
+            self.field[button.y][button.x] = button
             self.field[button.y][button.x] = button
 
-class FieldShop(FieldShop):
-    def __init__(self, count_x: int, count_y: int, size: int = 1600):
+class FieldShop(Field):
+    def __init__(self, size: int = 1600):
         # Размеры
         self.size = size
         self.width, self.height = size, size
         self.cell = 16
         count = size // self.cell
-        self.count_x, self.count_y = count_x, count_y
        
        #Поля
         self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
-        self.button_box = ['Upgrade', 'Menu', 'NewLocation', ]
-        for x in button_box:
-            button = Button(x) field[Button.y][button.x] = button
+        self.button_box = []
+        for x in self.button_box:
+            button = Button(x)
+            self.field[Button.y][button.x] = button
             
