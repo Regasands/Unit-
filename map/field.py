@@ -8,11 +8,10 @@ class Field:
     """
 
     def __init__(self,
-                 screen,
                  width: int = 10,
                  height: int = 10,
                  ):
-        self.screen = screen
+        # размеры (в клетках)
         self.width, self.height = width, height
 
         # все эти нужны для старых функций
@@ -140,14 +139,11 @@ class Field:
 
 
 class FieldMenu(Field):
-    def __init__(self, size: int = 1600):
-        # Размеры
-        self.size = size
-        self.width, self.height = size, size
-        self.cell = 10
-        count = size // self.cell
-        # Поля
-        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
+    def __init__(self,
+                 width: int = 10,
+                 height: int = 10):
+        super().__init__(width, height)
+        self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
         self.button_box = ['Start']
         for x in self.button_box:
             button = Button(x)
@@ -156,15 +152,11 @@ class FieldMenu(Field):
 
 
 class FieldShop(Field):
-    def __init__(self, size: int = 1600):
-        # Размеры
-        self.size = size
-        self.width, self.height = size, size
-        self.cell = 16
-        count = size // self.cell
-
-        # Поля
-        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
+    def __init__(self,
+                 width: int = 10,
+                 height: int = 10):
+        super().__init__(width, height)
+        self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
         self.button_box = []
         for x in self.button_box:
             button = Button(x)
