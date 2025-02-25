@@ -1,10 +1,10 @@
+from os import path
+from re import T
 import pygame
 from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
-from map.texture import Button
+from map.texture import Button, Mob
 
-# todo убрать этот импорт
-from map.texture import grass
 
 
 if __name__ == '__main__':
@@ -41,7 +41,11 @@ if __name__ == '__main__':
                                         if struct.name == 'Menu':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
-                                                pass
+                                                x, y = game.field_game.get_index_objects(None)
+                                                print(x, y)
+                                                game.field_game.field[y][x] = Mob('grass', 0, 0)
+
+                                                state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
                                         screen.fill((0, 0, 0))

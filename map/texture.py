@@ -47,3 +47,14 @@ class Mob(Structure):
             self.unique_id = 10
         super().__init__(f'mob_{key}_{self.level}')
 
+
+class Mob(Structure):
+    def __init__(self, image_name, key: str, level: int):
+        self.key = key
+        self.level = level
+        if image_name == 'Base_0':
+            self.count_money = 10
+            self.unique_id = 100
+        else:
+            self.count_money = 2
+        super().__init__(image_name)

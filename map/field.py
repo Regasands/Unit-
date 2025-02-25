@@ -123,7 +123,11 @@ class Field:
 
     def set_moving_pos(self, pos: tuple[int, int]):
         self.moving_pos = pos
-
+    def get_index_objects(self, object_):
+        for x in range(self.width):
+            for y in range(self.height):
+                if self.field[y][x] == object_:
+                    return x, y
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
         if structure == self.moving_structure:
@@ -137,7 +141,6 @@ class Field:
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = self.moving_structure
         self.set_moving_structure(None)
-
 
 
 class FieldMenu(Field):
