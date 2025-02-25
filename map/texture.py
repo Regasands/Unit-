@@ -17,6 +17,7 @@ class Structure:
 
 class Button(Structure):
     def __init__(self, name):
+        self.name = name
         if name  == 'Start':
             self.x, self.y = 3, 2
         else:

@@ -22,11 +22,17 @@ if __name__ == '__main__':
                 if state_engine.menu:
                         game.field_menu.render_structures(screen)
                         if event.type == pygame.MOUSEBUTTONDOWN:
-                                print('ff', game.field_menu.get_structure_by_mouse_pos(event.pos))
+                                object_ = field_menu.get_structure_by_mouse_pos(event.pos)
+                                if object_ is None:
+                                        break
+                                if object_.name == 'Start':
+                                        state_engine.menu  = False
+                                        state_engine.game = True
+                                        screen.fill((0, 0, 0))
                 elif state_engine.shop:
                         pass
                 elif state_engine.game:
-                        pass
+                        game.field_game.render_structures(screen)
         pygame.display.flip()
         game.clock.tick(60)
 pygame.quit()

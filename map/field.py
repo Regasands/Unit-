@@ -32,7 +32,7 @@ class Field:
                 if isinstance(structure, Button):
                     size = (200, 30)
                 else:
-                    size = (self.size, self.size)
+                    size = (self.cell, self.cell)
                 sprite = pygame.sprite.Sprite()
                 sprite.image = pygame.transform.scale(
                     structure.get_image(), size) 
