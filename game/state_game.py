@@ -31,3 +31,4 @@ class Game:
     def render(self):
         self.screen.fill((0, 0, 0))
         self.field_game.render_structures(self.screen)
+

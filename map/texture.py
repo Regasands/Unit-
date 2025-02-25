@@ -41,6 +41,4 @@ class Mob(Structure):
         super().__init__(image_name)
 
 
-class Tree(Structure):
-    def __init__(self):
-        super().__init__("tree")
+tree = Mob

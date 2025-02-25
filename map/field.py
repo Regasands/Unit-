@@ -22,8 +22,6 @@ class Field:
         self.cell_size: float = 80
 
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
-        self.field[0][0] = Tree()
-        self.field[3][3] = Tree()
 
         self.structure_sprites = pygame.sprite.Group()
 
