@@ -1,4 +1,3 @@
-from os import SEEK_CUR, supports_bytes_environ
 import pygame
 
 
@@ -18,7 +17,7 @@ class Structure:
 class Button(Structure):
     def __init__(self, name):
         self.name = name
-        if name  == 'Start':
+        if name == 'Start':
             self.x, self.y = 4, 2
         elif name == 'Menu':
             self.x, self.y = -1, 0
@@ -29,6 +28,7 @@ class Button(Structure):
         else:
             self.x, self.y = -1, -1
         super().__init__(name)
+
 
 class Base(Structure):
     def __init__(self, key):

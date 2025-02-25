@@ -98,9 +98,6 @@ class Field:
         if coords:
             x, y = coords
             self.field[y][x] = new_value
-            print(f"Элемент заменён в позиции: {x}, {y}")
-        else:
-            print("Элемент не найден, замена невозможна")
 
     def get_structure(self, target):
         for y, row in enumerate(self.field):  # Перебираем строки
@@ -110,8 +107,8 @@ class Field:
                 return x, y
         return None  # Если не найден
 
-    def add_structure(self,
-                      structure: Structure,
+    def set_structure(self,
+                      structure: Structure | None,
                       coords: tuple[int, int]
                       ):
         self.field[coords[1]][coords[0]] = structure
@@ -129,14 +126,17 @@ class Field:
 
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
-        if structure is not None or structure == "error":
+        if structure == self.moving_structure:
+            new_structure = keys[structure.key][structure.level + 1]
+            x, y = self.get_coords_by_mouse_pos(self.moving_pos)
+            self.field[y][x] = new_structure
+        elif structure is not None or structure == "error":
             x, y = self.moving_original_coords
             self.field[y][x] = self.moving_structure
-            self.set_moving_structure(None)
         else:
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = self.moving_structure
-            self.set_moving_structure(None)
+        self.set_moving_structure(None)
 
 
 
