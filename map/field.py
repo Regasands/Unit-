@@ -22,16 +22,18 @@ class Field:
         self.cell_size: float = 80
 
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
-        self.field[0][0] = Tree()
-        self.field[3][3] = Tree()
 
         self.structure_sprites = pygame.sprite.Group()
 
         self.moving_structure: Structure | None = None
         self.moving_pos: tuple[int, int] | None = None
         self.moving_original_coords: tuple[int, int] | None = None
+        for button in ['Menu', 'Buy', 'Upgrade']:
+            button_ = Button(button)
+            self.field[button_.y][button_.x] = button_
 
     def render_structures(self, screen):
+        screen.fill((0, 0, 0))
         screen_width, screen_height = screen.get_size()
         cell_size: int = round(self.cell_size)
         rows = ceil(screen_height / cell_size) + 1
@@ -160,4 +162,13 @@ class FieldShop(Field):
         self.button_box = []
         for x in self.button_box:
             button = Button(x)
-            self.field[Button.y][button.x] = button
+            self.field[button.y][button.x] = button
+
+        self.money = 0
+        self.d = 1
+    def check_your_bust(self):
+        pass
+
+
+    def add_bust(self):
+        pass
