@@ -1,64 +1,107 @@
-import math
-import random
+from map.texture import *
 from math import ceil
-import numpy
-from  map.texture  import *
+
 
 class Field:
     """
     Класс поля, отвечает за все объекты в игре и их рендеринг
     """
+
     def __init__(self,
-                 count_x: int, count_y: int, key: 0, size: int = 1600):
-        self.size = size
-        self.width, self.height = size, size
-        self.cell = 16
-        self.count = size // self.cell
-        self.count_x, self.count_y = count_x, count_y
-        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
-        for x in range(self.count_x): 
-                for y in range(self.count_y):
-                    self.field[x + key][y + key] = Base(key)
+                 screen,
+                 width: int = 10,
+                 height: int = 10,
+                 ):
+        self.screen = screen
+        self.width, self.height = width, height
+
+        # все эти нужны для старых функций
+        self.x: float = 1
+        self.y: float = 1
+        self.delta_x: float = 0
+        self.delta_y: float = 0
+        self.cell_size: float = 80
+
+        self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
+        self.field[0][0] = Tree()
+        self.field[3][3] = Tree()
+
+        self.structure_sprites = pygame.sprite.Group()
+
+        self.moving_structure: Structure | None = None
+        self.moving_pos: tuple[int, int] | None = None
+        self.moving_original_coords: tuple[int, int] | None = None
 
     def render_structures(self, screen):
+        screen_width, screen_height = screen.get_size()
+        cell_size: int = round(self.cell_size)
+        rows = ceil(screen_height / cell_size) + 1
+        cols = ceil(screen_width / cell_size) + 1
 
-        self.structures_sprites = pygame.sprite.Group()
+        self.structure_sprites = pygame.sprite.Group()
 
-        for x in range(self.count):
-            for y  in range(self.count):
+        for row in range(rows):
+            y = (ceil(self.height - self.y) + row) % self.height
+            for col in range(cols):
+                x = (ceil(self.width - self.x) + col) % self.width
                 structure = self.field[y][x]
                 if structure is None:
                     continue
-                if isinstance(structure, Button):
-                    size = (200, 30)
-                else:
-                    size = (self.cell, self.cell)
                 sprite = pygame.sprite.Sprite()
                 sprite.image = pygame.transform.scale(
-                    structure.get_image(), size) 
+                    structure.get_image(), (cell_size, cell_size)
+                )
                 sprite.rect = pygame.Rect(
-                    round(x * self.cell),
-                    round(y * self.cell),
-                    self.cell,
-                    self.cell)
-                
-                self.structures_sprites.add(sprite)
-        self.structures_sprites.draw(screen)
+                    round((col + self.delta_x - 1) * cell_size),
+                    round((row + self.delta_y - 1) * cell_size),
+                    cell_size,
+                    cell_size,
+                )
+                self.structure_sprites.add(sprite)
+        self.add_moving_structure_sprite()
+        self.structure_sprites.draw(screen)
+
+    def add_moving_structure_sprite(self):  # добавляет к группе
+        if self.moving_structure is None:
+            return
+        sprite = pygame.sprite.Sprite()
+        sprite.image = pygame.transform.scale(
+            self.moving_structure.get_image(), (self.cell_size, self.cell_size)
+        )
+        x, y = self.moving_pos
+        sprite.rect = pygame.Rect(
+            x - self.cell_size // 2,
+            y - self.cell_size // 2,
+            self.cell_size,
+            self.cell_size,
+        )
+        self.structure_sprites.add(sprite)
+
     def get_structure_sprites(self):
-        return self.structures_sprites
+        return self.structure_sprites
+
+    def get_coords_by_mouse_pos(self, pos):
+        pos_x, pos_y = pos[0] / self.cell_size, pos[1] / self.cell_size
+        x, y = pos_x - self.x, pos_y - self.y
+        x, y = ceil(x), ceil(y)
+        return x, y
 
     def get_structure_by_mouse_pos(self, pos):
-        x, y = pos[0] // self.cell, pos[1] // self.cell
+        x, y = self.get_coords_by_mouse_pos(pos)
+        if not (0 <= x < self.width and 0 <= y < self.height):
+            return "error"
         return self.field[y][x]
 
     def replace_structure(self, target, new_value):
-        coords = self.find_structure(target)
+        coords = self.get_structure(target)
         if coords:
             x, y = coords
             self.field[y][x] = new_value
             print(f"Элемент заменён в позиции: {x}, {y}")
+        else:
+            print("Элемент не найден, замена невозможна")
 
-    def find_structure(self, target):
+    def get_structure(self, target):
         for y, row in enumerate(self.field):  # Перебираем строки
             if target in row:  # Если элемент есть в строке
                 x = row.index(target)  # Индекс в строке
@@ -72,32 +115,57 @@ class Field:
                       ):
         self.field[coords[1]][coords[0]] = structure
 
+    def set_moving_structure(self, structure: tuple[int, int] | None, pos: tuple[int, int] | None = None):
+        self.moving_structure = structure
+        self.moving_pos = pos
+        if pos is not None:
+            self.moving_original_coords = self.get_coords_by_mouse_pos(pos)
+        else:
+            self.moving_original_coords = None
+
+    def set_moving_pos(self, pos: tuple[int, int]):
+        self.moving_pos = pos
+
+    def finish_moving(self):
+        structure = self.get_structure_by_mouse_pos(self.moving_pos)
+        if structure is not None or structure == "error":
+            x, y = self.moving_original_coords
+            self.field[y][x] = self.moving_structure
+            self.set_moving_structure(None)
+        else:
+            x, y = self.get_coords_by_mouse_pos(self.moving_pos)
+            self.field[y][x] = self.moving_structure
+            self.set_moving_structure(None)
+
+
 
 class FieldMenu(Field):
     def __init__(self, size: int = 1600):
         # Размеры
         self.size = size
         self.width, self.height = size, size
-        self.cell = 100
-        self.count = size // self.cell
-       #Поля
-        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
+        self.cell = 10
+        count = size // self.cell
+        # Поля
+        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
         self.button_box = ['Start']
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
+            self.field[button.y][button.x] = button
+
+
 class FieldShop(Field):
     def __init__(self, size: int = 1600):
         # Размеры
         self.size = size
         self.width, self.height = size, size
         self.cell = 16
-        self.count = size // self.cell
-       
-       #Поля
-        self.field: list[list[Structure | None]] = [[None] * self.count for _ in range(self.count)]
+        count = size // self.cell
+
+        # Поля
+        self.field: list[list[Structure | None]] = [[None] * count for _ in range(count)]
         self.button_box = []
         for x in self.button_box:
             button = Button(x)
             self.field[Button.y][button.x] = button
-            

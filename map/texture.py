@@ -33,9 +33,14 @@ class Mob(Structure):
     def __init__(self, image_name):
         if image_name == 'Base_0':
             self.count_money = 100
-            self.unical_id = 100
+            self.unique_id = 100
 
         else:
             self.count_money = 10
-            self.unical_id = 10
+            self.unique_id = 10
         super().__init__(image_name)
+
+
+class Tree(Structure):
+    def __init__(self):
+        super().__init__("tree")
