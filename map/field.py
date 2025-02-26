@@ -91,7 +91,8 @@ class Field:
 
     def get_structure_by_mouse_pos(self, pos):
         x, y = self.get_coords_by_mouse_pos(pos)
-        if not (0 <= x < self.width and 0 <= y < self.height):
+        # второе условие - проверка на текст слева сверху
+        if not (0 <= x < self.width and 0 <= y < self.height) or (x, y) in [(0, 0), (1, 0), (2, 0), (3, 0)]:
             return "error"
         return self.field[y][x]
 
