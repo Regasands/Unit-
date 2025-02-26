@@ -1,3 +1,4 @@
+import logging
 from math import ceil
 
 from map.texture import *
@@ -133,7 +134,7 @@ class Field:
 
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
-        if structure == self.moving_structure:
+        if structure.level == self.moving_structure.level:
             new_structure = keys[structure.key][structure.level + 1]
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = new_structure

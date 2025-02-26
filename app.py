@@ -10,7 +10,7 @@ from map.texture import grass
 
 if __name__ == '__main__':
     logging.basicConfig(
-    level=logging.INFO,
+    level=logging.ERROR,
     format="%(asctime)s [%(levelname)s]  %(lineno)d %(message)s",
     handlers=[
         logging.FileHandler("app.log", encoding='utf-8'),
@@ -53,7 +53,9 @@ if __name__ == '__main__':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
                                                 x, y = game.field_game.get_index_objects(None)
-                                                game.field_game.field[y][x] = Mob('grass', 0, 0)
+                                                if game.money >= 100:
+                                                        game.money -= 100
+                                                        game.field_game.field[y][x] = Mob('grass', 0, 0)
 
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
