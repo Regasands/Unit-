@@ -123,9 +123,10 @@ class Field:
 
     def set_moving_pos(self, pos: tuple[int, int]):
         self.moving_pos = pos
+
     def get_index_objects(self, object_):
-        for x in range(self.width):
-            for y in range(self.height):
+        for y in range(1, self.height - 1):
+            for x in range( self.width):
                 if self.field[y][x] == object_:
                     return x, y
     def finish_moving(self):
