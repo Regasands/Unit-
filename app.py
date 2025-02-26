@@ -4,9 +4,6 @@ from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
 from map.texture import Button, Mob
 
-# убрать потом
-from map.texture import grass
-
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -64,9 +61,6 @@ if __name__ == '__main__':
                                 field.set_structure(None, (x, y))
                                 field.set_moving_structure(struct, event.pos)
                                 state_engine.objects_moving = True
-                    elif event.button == 3:
-                        x, y = field.get_coords_by_mouse_pos(event.pos)
-                        field.set_structure(grass, (x, y))
                 elif event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         if state_engine.objects_moving:

@@ -1,8 +1,4 @@
-from math import e
-from os import stat
-from typing import overload
 import pygame
-from pygame.display import update
 
 from map.texture import Mob
 
@@ -39,7 +35,7 @@ class Game:
         self.overlay = pygame.Surface((300, 70))
         self.overlay.fill((0, 0, 0, 0))
         # basic info
-        self.font  = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 36)
         # position
         self.overlay_rect = pygame.Rect(0, 0, 300, 70)
 
@@ -49,7 +45,7 @@ class Game:
 
     def render_text_price(self) -> None:
         self.update += 1
-        if self.update >  100:
+        if self.update > 100:
             self.update_price_and_money()
             self.update = 0
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
@@ -63,15 +59,12 @@ class Game:
     def update_price_and_money(self):
         start_point = 1
         for list_ in self.field_game.field:
-            for elem in list_:   
+            for elem in list_:
                 if isinstance(elem, Mob):
                     start_point += elem.count_money
 
         self.profit = start_point
         self.money += self.profit
 
-
-
     def alert(self, time, text):
         pass
-    

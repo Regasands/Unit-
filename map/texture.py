@@ -49,22 +49,13 @@ class Mob(Structure):
         super().__init__(image_name)
 
 
-grass = Mob("grass", "trees", 0)
-tall_grass = Mob("tall_grass", "trees", 1)
-berries = Mob("berries", "trees", 2)
-birch = Mob("birch", "trees", 3)
-spruce = Mob("spruce", "trees", 4)
-oak = Mob("oak", "trees", 5)
-super_oak = Mob("super_oak", "trees", 6)
-golden_oak = Mob("golden_oak", "trees", 7)
+trees = {0: "grass",
+         1: "tall_grass",
+         2: "berries",
+         3: "birch",
+         4: "spruce",
+         5: "oak",
+         6: "super_oak",
+         7: "golden_oak"}
 
-trees = {0: grass,
-         1: tall_grass,
-         2: berries,
-         3: birch,
-         4: spruce,
-         5: oak,
-         6: super_oak,
-         7: golden_oak}
-
-keys = {"trees": trees}
+keys = {0: trees}
