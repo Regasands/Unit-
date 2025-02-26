@@ -1,5 +1,4 @@
-from os import path
-from re import T
+import logging
 import pygame
 from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
@@ -8,10 +7,20 @@ from map.texture import Button, Mob
 
 
 if __name__ == '__main__':
+    logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s]  %(lineno)d %(message)s",
+    handlers=[
+        logging.FileHandler("app.log", encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+    )
+    logging.info("Приложение запущено")
+
     pygame.init()
     size: tuple = 800, 800
     screen = pygame.display.set_mode(size)
-    run = True
+    # создание основных поле
     field = Field()
     field_menu = FieldMenu()
     field_shop = FieldShop()
@@ -42,7 +51,6 @@ if __name__ == '__main__':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
                                                 x, y = game.field_game.get_index_objects(None)
-                                                print(x, y)
                                                 game.field_game.field[y][x] = Mob('grass', 0, 0)
 
                                                 state_engine.game = True
@@ -63,7 +71,7 @@ if __name__ == '__main__':
                             state_engine.objects_moving = False
                             field.finish_moving()
                 game.field_game.render_structures(screen)
-                game.render_text()
+            # магазин улучшений `
             elif state_engine.shop:
                 pass
 
@@ -78,6 +86,7 @@ if __name__ == '__main__':
                         state_engine.menu = False
                         state_engine.game = True
                         screen.fill((0, 0, 0))
+        game.render_text_price() 
         pygame.display.flip()
-        game.clock.tick(60)
+        game.clock.tick(100)
 pygame.quit()
