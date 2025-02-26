@@ -4,6 +4,8 @@ from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
 from map.texture import Button, Mob
 
+# убрать потом
+from map.texture import grass
 
 
 if __name__ == '__main__':
@@ -71,6 +73,7 @@ if __name__ == '__main__':
                             state_engine.objects_moving = False
                             field.finish_moving()
                 game.field_game.render_structures(screen)
+
             # магазин улучшений `
             elif state_engine.shop:
                 pass

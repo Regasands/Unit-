@@ -1,5 +1,6 @@
-from map.texture import *
 from math import ceil
+
+from map.texture import *
 
 
 class Field:
@@ -126,9 +127,10 @@ class Field:
 
     def get_index_objects(self, object_):
         for y in range(1, self.height - 1):
-            for x in range( self.width):
+            for x in range(self.width):
                 if self.field[y][x] == object_:
                     return x, y
+
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
         if structure == self.moving_structure:
@@ -169,9 +171,9 @@ class FieldShop(Field):
             self.field[button.y][button.x] = button
 
         self.d = 1
+
     def check_your_bust(self):
         pass
-
 
     def add_bust(self):
         pass
