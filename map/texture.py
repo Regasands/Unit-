@@ -41,30 +41,36 @@ class Mob(Structure):
     def __init__(self, image_name, key: str, level: int):
         self.key = key
         self.level = level
-        if image_name == 'Base_0':
-            self.count_money = 10
-            self.unique_id = 100
-        else:
-            self.count_money = 1
+        if key == 0:
+            if level == 0:
+                self.count_money = 1
+            elif level == 1:
+                self.count_money = 3
+            elif level == 2:
+                self.count_money = 9
+            elif level == 3:
+                self.count_money = 20
+            elif level == 4:
+                self.count_money = 35
+            elif level == 5:
+                self.count_money = 100
+            elif level == 6:
+                self.count_money = 150
+            elif level == 7:
+                self.count_money = 300
+            elif level == 8:
+                self.count_money = 1000
+
         super().__init__(image_name)
 
 
-grass = Mob("grass", "trees", 0)
-tall_grass = Mob("tall_grass", "trees", 1)
-berries = Mob("berries", "trees", 2)
-birch = Mob("birch", "trees", 3)
-spruce = Mob("spruce", "trees", 4)
-oak = Mob("oak", "trees", 5)
-super_oak = Mob("super_oak", "trees", 6)
-golden_oak = Mob("golden_oak", "trees", 7)
+trees = {0: "grass",
+         1: "tall_grass",
+         2: "berries",
+         3: "birch",
+         4: "spruce",
+         5: "oak",
+         6: "super_oak",
+         7: "golden_oak"}
 
-trees = {0: grass,
-         1: tall_grass,
-         2: berries,
-         3: birch,
-         4: spruce,
-         5: oak,
-         6: super_oak,
-         7: golden_oak}
-
-keys = {"trees": trees}
+keys = {0: trees}

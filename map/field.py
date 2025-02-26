@@ -131,13 +131,18 @@ class Field:
             for x in range(self.width):
                 if self.field[y][x] == object_:
                     return x, y
+        return 'full', False
 
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
-        if structure.level == self.moving_structure.level:
-            new_structure = keys[structure.key][structure.level + 1]
+        if type(structure) is Mob and structure.level == self.moving_structure.level:
+            key = keys[structure.key]
+            if structure.level + 1 not in key:
+                logging.ERROR("Соединены два объекта максимального уровня")
+                return
+            new_structure_name = key[structure.level + 1]
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
-            self.field[y][x] = new_structure
+            self.field[y][x] = Mob(new_structure_name, structure.key, structure.level + 1)
         elif structure is not None or structure == "error":
             x, y = self.moving_original_coords
             self.field[y][x] = self.moving_structure

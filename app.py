@@ -4,9 +4,6 @@ from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
 from map.texture import Button, Mob
 
-# убрать потом
-from map.texture import grass
-
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -53,10 +50,13 @@ if __name__ == '__main__':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
                                                 x, y = game.field_game.get_index_objects(None)
-                                                if game.money >= 100:
-                                                        game.money -= 100
+                                                if x == 'full':
+                                                        game.set_alert(50, 'Full field')
+                                                elif game.money >= 10:
+                                                        game.money -= 10
                                                         game.field_game.field[y][x] = Mob('grass', 0, 0)
-
+                                                else:
+                                                        game.set_alert(50, 'Need more money')
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
@@ -66,9 +66,6 @@ if __name__ == '__main__':
                                 field.set_structure(None, (x, y))
                                 field.set_moving_structure(struct, event.pos)
                                 state_engine.objects_moving = True
-                    elif event.button == 3:
-                        x, y = field.get_coords_by_mouse_pos(event.pos)
-                        field.set_structure(grass, (x, y))
                 elif event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         if state_engine.objects_moving:
@@ -91,7 +88,8 @@ if __name__ == '__main__':
                         state_engine.menu = False
                         state_engine.game = True
                         screen.fill((0, 0, 0))
-        game.render_text_price() 
+        game.render_text_price()
+        game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)
 pygame.quit()
