@@ -71,9 +71,9 @@ class Game:
         
         # update
 
-        self.overlay_update = pygame.Surface((512, 256))
+        self.overlay_update = pygame.Surface((512, 200))
         self.overlay_update.fill((0, 0, 0 ,0))
-        self.overlay_update_react = pygame.Rect(0, 0, 512, 256)
+        self.overlay_update_react = pygame.Rect(0, 0, 512, 200)
 
 
     def render(self):
@@ -141,15 +141,16 @@ class Game:
 
             current_discount =self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
 
-            text_1 = self.font.render(f'Upgrade {key} for {states[1]["price"] * current_discount}. Upgrade level -- {current_level + 1}', True, (255, 255, 0))
+            text_1 = self.font.render(f'Upgrade {upgrade_type}. Price:  {states[1]["price"] * current_discount}', True, (255, 255, 0))
             text_2 = self.font.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
-
-        self.overlay_update.blit(text_1, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 5))
+            text_3 = self.font.render(f'Current level: {current_level}/{8}', True, (255, 255, 0))
+        self.overlay_update.blit(text_1, (self.overlay_update_react.x + 30, self.overlay_update_react.y + 20))
 
         if text_2:
-            self.overlay_update.blit( text_2, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 40))
-        self.screen.blit(self.overlay_update, (50, 60))
-
+            self.overlay_update.blit( text_2, (self.overlay_update_react.x + 30, self.overlay_update_react.y + 60))
+            self.overlay_update.blit(text_3, (self.overlay_update_react.x + 300, self.overlay_update_react.y + 150))
+        self.screen.blit(self.overlay_update, (150, 100))
+            
     def complite_upgrade_updates(self):
 
         # проверяю и делаю улучшение, если все условия соблюдены
@@ -164,7 +165,7 @@ class Game:
             self.set_alert(100, 'Уже максимальный уровнь')
             return
         # получаем скидку 
-        dicount = self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
+        discount = self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
 
         final_price = price_next * discount
         if final_price > self.money:

@@ -1,4 +1,5 @@
 import logging
+import re
 import pygame
 from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop
@@ -82,6 +83,8 @@ if __name__ == '__main__':
                         for sprite in field_menu.get_structure_sprites():
                                 if sprite.rect.collidepoint(event.pos):
                                         structure = game.field_shop.get_structure_by_mouse_pos(event.pos)
+                                        if not isinstance(structure, Button):
+                                                break
                                         if structure.name == 'Menu':
                                                 pass
                                         elif structure.name == 'Start':
