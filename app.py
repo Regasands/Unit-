@@ -107,6 +107,7 @@ if __name__ == '__main__':
             game.render_text_price()
             game.update_price_and_money()
             game.field_game.render_structures(screen)
+            # game.field_game.render_animations(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)

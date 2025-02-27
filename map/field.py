@@ -1,7 +1,12 @@
 import logging
 from math import ceil
 
+<<<<<<< HEAD
 from datafile.config import DataEconomy
+=======
+import pygame.sprite
+
+>>>>>>> 30fe0477f2ddaf64374b6b156bf4c5f9af5cd1f4
 from map.texture import *
 
 
@@ -27,6 +32,7 @@ class Field:
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
 
         self.structure_sprites = pygame.sprite.Group()
+        self.animations = []
 
         self.moving_structure: Structure | None = None
         self.moving_pos: tuple[int, int] | None = None
@@ -138,6 +144,16 @@ class Field:
                     return x, y
         return 'full', False
 
+    def render_animations(self, screen):
+        for animation in self.animations:
+            animation.update(screen)
+
+    def add_animation(self, x, y, size):
+        animation = AnimatedGif("sprites/merging.gif")
+        rect = pygame.Rect(x * size, y * size, size, size)
+        animation.start(rect, fade_duration=500)
+        self.animations.append(animation)
+
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
         if type(structure) is Mob and structure.level == self.moving_structure.level:
@@ -148,6 +164,7 @@ class Field:
             new_structure_name = key[structure.level + 1]
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = Mob(new_structure_name, structure.key, structure.level + 1)
+            self.add_animation(x, y, self.cell_size)
         elif structure is not None or structure == "error":
             x, y = self.moving_original_coords
             self.field[y][x] = self.moving_structure
