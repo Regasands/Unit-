@@ -74,10 +74,6 @@ if __name__ == '__main__':
                         if state_engine.objects_moving:
                             state_engine.objects_moving = False
                             field.finish_moving()
-                game.render_text_price()
-                game.update_price_and_money()
-                game.field_game.render_structures(screen)
-
             # магазин улучшений `
             elif state_engine.shop:
                 pass
@@ -91,6 +87,10 @@ if __name__ == '__main__':
                         if sprite.rect.collidepoint(event.pos):
                             state_engine.menu = False
                             state_engine.game = True
+        if state_engine.game:
+            game.render_text_price()
+            game.update_price_and_money()
+            game.field_game.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)

@@ -4,7 +4,7 @@ import re
 import pygame
 import json
 import time
-
+import os
 from pygame.rect import RectType
 from map.texture import Mob
 from datafile.config import DataEconomy
@@ -39,6 +39,7 @@ class Game:
         #logic timer
         self.clock = pygame.time.Clock()
         self.update_text_time = 0
+        self.update_delta_time = 1
         
         # alert logic
         self.alert: bool = False
@@ -98,6 +99,7 @@ class Game:
         self.money += self.profit
         if self.money >= self.max_money:
             self.money = self.max_money
+
     # пробновая версия алертов
     def set_alert(self, time, text):
         if self.alert:
