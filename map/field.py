@@ -175,12 +175,11 @@ class FieldShop(Field):
                  height: int = 10):
         super().__init__(width, height)
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
-        self.button_box = []
+        self.button_box = ['Menu', 'Start', 'BuyParam', 'NextParam', 'BackParam']
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
 
-        self.d = 1
 
     def check_your_bust(self):
         pass

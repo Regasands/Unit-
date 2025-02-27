@@ -76,7 +76,22 @@ if __name__ == '__main__':
                             field.finish_moving()
             # магазин улучшений `
             elif state_engine.shop:
-                pass
+                game.field_shop.render_structures(screen)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        object_ = field_shop.get_structure_by_mouse_pos(event.pos)
+                        for sprite in field_menu.get_structure_sprites():
+                                if sprite.rect.collidepoint(event.pos):
+                                        structure = game.field_shop.get_structure_by_mouse_pos(event.pos)
+                                        if structure.name == 'Menu':
+                                                pass
+                                        elif structure.name == 'Start':
+                                                pass
+                                        elif structure.name == 'BuyParam':
+                                                pass
+                                        elif structure.name == 'NextParam':
+                                                pass
+                                        elif structure.name == 'BackParam':
+                                                pass
 
             # МЕНЮ
             elif state_engine.menu:
@@ -87,6 +102,7 @@ if __name__ == '__main__':
                         if sprite.rect.collidepoint(event.pos):
                             state_engine.menu = False
                             state_engine.game = True
+
         if state_engine.game:
             game.render_text_price()
             game.update_price_and_money()

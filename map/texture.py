@@ -1,3 +1,4 @@
+from re import S
 import pygame
 
 
@@ -25,6 +26,13 @@ class Button(Structure):
             self.x, self.y = -1, -1
         elif name == 'Upgrade':
             self.x, self.y = -2, -1
+
+        elif name == 'NextParam':
+            self.x, self.y = 5, -2
+        elif name == 'BackParam':
+            self.x, self.y = 3, -2
+        elif name == 'BuyUpdate':
+            self.x, self.y = 4, -2
         else:
             self.x, self.y = -1, -1
         super().__init__(name)
