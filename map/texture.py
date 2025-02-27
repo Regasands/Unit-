@@ -16,7 +16,6 @@ class AnimatedGif:
         self.fade_duration = None
 
     def load_gif(self):
-        """Load all frames from the GIF along with their durations."""
         pil_image = Image.open(self.gif_path)
         try:
             while True:

@@ -1,7 +1,9 @@
 import logging
 import pygame
+
+import map.texture
 from game.state_game import Game, State
-from map.field import Field, FieldMenu, FieldShop
+from map.field import Field, FieldMenu, FieldShop, FieldEnd
 from map.texture import Button, Mob
 
 
@@ -23,13 +25,20 @@ if __name__ == '__main__':
     field = Field()
     field_menu = FieldMenu()
     field_shop = FieldShop()
-    game = Game(screen, field_menu=field_menu, field_shop=field_shop, field_game=field)
+    field_end = FieldEnd()
+    game = Game(screen, field_menu=field_menu, field_shop=field_shop, field_game=field, field_end=field_end)
     state_engine = State()
 
     background = pygame.image.load("sprites/background.png")
     background = pygame.transform.scale(background, (800, 800))
 
+    end_background = pygame.image.load("sprites/end.png")
+    end_background = pygame.transform.scale(end_background, (800, 800))
+
     while state_engine.start_game:
+        if not state_engine.end:
+            screen.blit(background, (0, 0))
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 state_engine.start_game = False
@@ -65,11 +74,21 @@ if __name__ == '__main__':
                                 field.set_structure(None, (x, y))
                                 field.set_moving_structure(struct, event.pos)
                                 state_engine.objects_moving = True
+                    # Для дебага, чтобы спавнить последние
+                    # elif event.button == 3:
+                    #     x, y = field.get_coords_by_mouse_pos(event.pos)
+                    #     field.set_structure(Mob("super_oak", 0, 6), (x, y))
                 elif event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         if state_engine.objects_moving:
                             state_engine.objects_moving = False
-                            field.finish_moving()
+                            end = field.finish_moving()
+                            if end:
+                                state_engine.menu = False
+                                state_engine.shop = False
+                                state_engine.game = False
+                                state_engine.end = True
+                            break
             # магазин улучшений `
             elif state_engine.shop:
                 pass
@@ -77,12 +96,19 @@ if __name__ == '__main__':
             # МЕНЮ
             elif state_engine.menu:
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    object_ = field_menu.get_structure_by_mouse_pos(event.pos)
                     for sprite in field_menu.get_structure_sprites():
                         if sprite.rect.collidepoint(event.pos):
                             state_engine.menu = False
                             state_engine.game = True
-        screen.blit(background, (0, 0))
+
+            elif state_engine.end:
+                screen.blit(end_background, (0, 0))
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    object_ = field_end.get_structure_by_mouse_pos(event.pos)
+                    if type(object_) is map.texture.Button:
+                        state_engine.menu = True
+                        state_engine.end = False
+
         if state_engine.game:
             if state_engine.objects_moving:
                 mouse_pos = pygame.mouse.get_pos()
@@ -93,6 +119,8 @@ if __name__ == '__main__':
             game.field_game.render_animations(screen)
         elif state_engine.menu:
             game.field_menu.render_structures(screen)
+        elif state_engine.end:
+            game.field_end.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)

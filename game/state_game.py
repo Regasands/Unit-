@@ -27,14 +27,18 @@ class State:
         # game
         self.game = False
 
+        # end
+        self.end = False
+
 
 class Game:
-    def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game) -> None:
+    def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game, field_end) -> None:
         # logic game
         self.screen = screen
         self.field_game = field_game
         self.field_menu = field_menu
         self.field_shop = field_shop
+        self.field_end = field_end
 
         #logic timer
         self.clock = pygame.time.Clock()
@@ -119,8 +123,6 @@ class Game:
         text = self.font.render(f'{self.text_alert}', True, (255, 0, 0))
         self.overlay_alert.blit(text, (self.overlay_rect_alert.x + 10, self.overlay_rect_alert.y + 5))
         self.screen.blit(self.overlay_alert, (300, 10))
-
-
 
 
 class SaveData:

@@ -150,13 +150,14 @@ class Field:
         animation.start(rect, fade_duration=500)
         self.animations.append(animation)
 
-    def finish_moving(self):
+    def finish_moving(self) -> bool:
         structure = self.get_structure_by_mouse_pos(self.moving_pos)
         if type(structure) is Mob and structure.level == self.moving_structure.level:
             key = keys[structure.key]
             if structure.level + 1 not in key:
-                logging.ERROR("Соединены два объекта максимального уровня")
-                return
+                self.set_moving_structure(None)
+                self.field = [[None] * self.width for _ in range(self.height)]
+                return True
             new_structure_name = key[structure.level + 1]
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = Mob(new_structure_name, structure.key, structure.level + 1)
@@ -168,6 +169,7 @@ class Field:
             x, y = self.get_coords_by_mouse_pos(self.moving_pos)
             self.field[y][x] = self.moving_structure
         self.set_moving_structure(None)
+        return False
 
 
 class FieldMenu(Field):
@@ -201,3 +203,15 @@ class FieldShop(Field):
 
     def add_bust(self):
         pass
+
+
+class FieldEnd(Field):
+    def __init__(self,
+                 width: int = 10,
+                 height: int = 10):
+        super().__init__(width, height)
+        self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
+        self.button_box = ["Menu"]
+        for x in self.button_box:
+            button = Button(x)
+            self.field[button.y][button.x] = button
