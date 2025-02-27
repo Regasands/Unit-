@@ -35,7 +35,6 @@ class Field:
             self.field[button_.y][button_.x] = button_
 
     def render_structures(self, screen):
-        screen.fill((0, 0, 0))
         screen_width, screen_height = screen.get_size()
         cell_size: int = round(self.cell_size)
         rows = ceil(screen_height / cell_size) + 1
@@ -51,15 +50,19 @@ class Field:
                 if structure is None:
                     continue
                 sprite = pygame.sprite.Sprite()
+                sprite_size = cell_size
+                if type(structure) is Button and structure.name == "Start":
+                    sprite_size *= 2
                 sprite.image = pygame.transform.scale(
-                    structure.get_image(), (cell_size, cell_size)
+                    structure.get_image(), (sprite_size, sprite_size)
                 )
-                sprite.rect = pygame.Rect(
+                rect = pygame.Rect(
                     round((col + self.delta_x - 1) * cell_size),
                     round((row + self.delta_y - 1) * cell_size),
-                    cell_size,
-                    cell_size,
+                    sprite_size,
+                    sprite_size,
                 )
+                sprite.rect = rect
                 self.structure_sprites.add(sprite)
         self.add_moving_structure_sprite()
         self.structure_sprites.draw(screen)
