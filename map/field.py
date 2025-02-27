@@ -132,6 +132,7 @@ class Field:
             for x in range(self.width):
                 if self.field[y][x] == object_:
                     return x, y
+        return 'full', False
 
     def finish_moving(self):
         structure = self.get_structure_by_mouse_pos(self.moving_pos)

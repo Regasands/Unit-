@@ -7,7 +7,7 @@ from map.texture import Button, Mob
 
 if __name__ == '__main__':
     logging.basicConfig(
-    level=logging.INFO,
+    level=logging.ERROR,
     format="%(asctime)s [%(levelname)s]  %(lineno)d %(message)s",
     handlers=[
         logging.FileHandler("app.log", encoding='utf-8'),
@@ -50,8 +50,13 @@ if __name__ == '__main__':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
                                                 x, y = game.field_game.get_index_objects(None)
-                                                game.field_game.field[y][x] = Mob('grass', 0, 0)
-
+                                                if x == 'full':
+                                                        game.set_alert(50, 'Full field')
+                                                elif game.money >= 10:
+                                                        game.money -= 10
+                                                        game.field_game.field[y][x] = Mob('grass', 0, 0)
+                                                else:
+                                                        game.set_alert(50, 'Need more money')
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
@@ -83,7 +88,8 @@ if __name__ == '__main__':
                         state_engine.menu = False
                         state_engine.game = True
                         screen.fill((0, 0, 0))
-        game.render_text_price() 
+        game.render_text_price()
+        game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)
 pygame.quit()

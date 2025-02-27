@@ -41,11 +41,26 @@ class Mob(Structure):
     def __init__(self, image_name, key: str, level: int):
         self.key = key
         self.level = level
-        if image_name == 'Base_0':
-            self.count_money = 10
-            self.unique_id = 100
-        else:
-            self.count_money = 1
+        if key == 0:
+            if level == 0:
+                self.count_money = 1
+            elif level == 1:
+                self.count_money = 3
+            elif level == 2:
+                self.count_money = 9
+            elif level == 3:
+                self.count_money = 20
+            elif level == 4:
+                self.count_money = 35
+            elif level == 5:
+                self.count_money = 100
+            elif level == 6:
+                self.count_money = 150
+            elif level == 7:
+                self.count_money = 300
+            elif level == 8:
+                self.count_money = 1000
+
         super().__init__(image_name)
 
 
