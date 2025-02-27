@@ -28,15 +28,18 @@ class State:
         # game
         self.game = False
 
+        # end
+        self.end = False
 
+        
 class Game:
-    def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game) -> None:
+    def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game, field_end) -> None: 
         # logic game
         self.screen = screen
         self.field_game = field_game
         self.field_menu = field_menu
         self.field_shop = field_shop
-
+        self.field_end = field_end
         #logic timer
         self.clock = pygame.time.Clock()
         self.update_text_time = 0

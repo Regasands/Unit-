@@ -115,22 +115,28 @@ class Mob(Structure):
             if level == 0:
                 self.count_money = 1
             elif level == 1:
+                image_name = 'tall_grass'
                 self.count_money = 3
             elif level == 2:
                 self.count_money = 9
+                image_name = 'berries'
             elif level == 3:
+                image_name = 'birch'
                 self.count_money = 20
             elif level == 4:
+                image_name = 'spruce'
                 self.count_money = 35
             elif level == 5:
+                image_name = 'oak'
                 self.count_money = 100
             elif level == 6:
+                image_name = 'super_oak'
                 self.count_money = 150
             elif level == 7:
+                image_name = 'golden_oak'
                 self.count_money = 300
             elif level == 8:
                 self.count_money = 1000
-
         super().__init__(image_name)
 
 
