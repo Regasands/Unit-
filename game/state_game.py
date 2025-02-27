@@ -83,10 +83,10 @@ class Game:
         self.screen.fill((0, 0, 0))
         self.field_game.render_structures(self.screen)
 
-    def render_text_price(self) -> None:
+    def render_text_price(self, arg2 = 255, arg1 = 255) -> None:
         # draw text
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
-        text = self.font.render(f"Your money: {self.money}/{self.max_money}", True, (255, 255, 255))
+        text = self.font.render(f"Your money: {self.money}/{self.max_money}", True, (255, arg1, arg2))
 
         text_2 = self.font.render(f"Your profit: {self.profit}", True, (255, 255, 255))
         self.overlay.blit(text_2, (self.overlay_rect.x + 20, self.overlay_rect.y + 30))
@@ -222,9 +222,7 @@ class SaveData:
             return
 
         params = self.get_data(name)
-        logging.info(params[key])
         params[key] = params[key] + 1 if isinstance(params[key], int) else not params[key]
-        logging.info(params[key])
 
         with open(name, 'w', encoding='utf-8') as file:
             json.dump(params,  file, ensure_ascii=False)

@@ -68,7 +68,7 @@ if __name__ == '__main__':
                                                         game.set_alert(50, 'Full field')
                                                 elif game.money >= 10:
                                                         game.money -= 10
-                                                        game.field_game.field[y][x] = Mob('grass', 0, 5)
+                                                        game.field_game.field[y][x] = Mob('grass', 0, 7)
                                                 else:
                                                         game.set_alert(50, 'Need more money')
                                                 state_engine.game = True
@@ -89,7 +89,6 @@ if __name__ == '__main__':
                                 state_engine.shop = False
                                 state_engine.game = False
                                 state_engine.end = True
-                            logging.info(end)
                             break
             # магазин улучшений `
             elif state_engine.shop:
@@ -97,7 +96,6 @@ if __name__ == '__main__':
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for sprite in field_menu.get_structure_sprites():
                         structure = field_shop.get_structure_by_mouse_pos(event.pos)
-                        logging.info(structure)
                         if not isinstance(structure, Button):
                             break
                         
@@ -132,6 +130,14 @@ if __name__ == '__main__':
                     if isinstance(object_, Button):
                         state_engine.menu = True
                         state_engine.end = False
+                        field = Field()
+                        
+
+                        field_menu = FieldMenu()
+                        field_shop = FieldShop()
+                        field_end = FieldEnd()
+                        game = Game(screen, field_menu=field_menu, field_shop=field_shop, field_game=field, field_end=field_end)
+                        state_engine = State()
 
         if state_engine.game:
             game.render_text_price()
@@ -143,6 +149,10 @@ if __name__ == '__main__':
                 game.render_update_inforamtion()
                 game.render_text_price()
             # game.field_game.render_animations(screen)
+        elif state_engine.end:
+                game.render_text_price(arg1 = 0, arg2 = 0)
+                game.set_alert(1000, 'You win')
+                game.field_end.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)
