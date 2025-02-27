@@ -7,7 +7,7 @@ from map.texture import Button, Mob
 
 if __name__ == '__main__':
     logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.INFO,
     format="%(asctime)s [%(levelname)s]  %(lineno)d %(message)s",
     handlers=[
         logging.FileHandler("app.log", encoding='utf-8'),

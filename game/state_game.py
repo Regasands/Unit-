@@ -1,9 +1,13 @@
-from logging import addLevelName
+from logging import addLevelName, log
 import logging
+import os
 import re
 import pygame
+import json
 
+from pygame.rect import RectType
 from map.texture import Mob
+from datafile.config import DataEconomy
 
 
 class State:
@@ -46,8 +50,12 @@ class Game:
         self.overlay_rect_alert: Rect = pygame.Rect(0, 0, 250, 30)
 
         # economic
-        self.money = 100
-        self.profit = 1
+        self.updater_state_economic = SaveData()
+        self.params_economic_data = self.updater_state_economic.get_data(self.updater_state_economic.setting_updaters)
+        self.money = self.params_economic_data['money']
+        self.profit = self.params_economic_data['profit']
+        self.max_money = self.updater_state_economic.get_only_effect(
+                'max_money', self.params_economic_data['max_money'])
 
         # logic for overlay
         self.overlay = pygame.Surface((300, 70))
@@ -58,6 +66,7 @@ class Game:
 
         # position
         self.overlay_rect = pygame.Rect(0, 0, 300, 70)
+        
 
     def render(self):
         self.screen.fill((0, 0, 0))
@@ -72,7 +81,7 @@ class Game:
 
         # draw text
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
-        text = self.font.render(f"Your money: {self.money}", True, (255, 255, 255))
+        text = self.font.render(f"Your money: {self.money}/{self.max_money}", True, (255, 255, 255))
 
         text_2 = self.font.render(f"Your profit: {self.profit}", True, (255, 255, 255))
         self.overlay.blit(text_2, (self.overlay_rect.x + 20, self.overlay_rect.y + 30))
@@ -80,7 +89,7 @@ class Game:
         self.screen.blit(self.overlay, (10, 10))
 
     def update_price_and_money(self):
-        start_point = 1
+        start_point = self.params_economic_data['profit']
         for list_ in self.field_game.field:
             for elem in list_:
                 if isinstance(elem, Mob):
@@ -88,7 +97,8 @@ class Game:
 
         self.profit = start_point
         self.money += self.profit
-
+        if self.money >= self.max_money:
+            self.money = self.max_money
     # пробновая версия алертов
     def set_alert(self, time, text):
         if self.alert:
@@ -101,6 +111,7 @@ class Game:
         if not self.alert:
             return
         self.time_alert -= 1
+        
         if self.time_alert <= 0:
             self.alert = False
         pygame.draw.rect(self.overlay_alert, (0, 0, 0, 0), self.overlay_rect_alert, 0)
@@ -111,4 +122,63 @@ class Game:
 
 
 
+class SaveData:
+    # test create saves
+    def __init__(self) -> None:
+        self.setting_updaters = 'datafile/saves.json'
+        self.data_ds = {}
 
+    def get_data(self, name):
+        if not os.path.exists(name):
+            with open(name, 'w', encoding='utf-8') as file:
+                json.dump(DataEconomy.START_UPDATERS, file, ensure_ascii=False)
+                logging.info('файл успешно создан')
+
+                return DataEconomy.START_UPDATERS
+        try:
+            with open(name, 'r', encoding='utf-8') as file:
+                
+                data =  json.load(file)
+                logging.info('файл успешно прочитан')
+                return data
+        except Exception as e:
+            logging.error(f'произошла ошибка {e}')
+            with open(name, 'w', encoding='utf-8') as file:
+                json.dump(DataEconomy.START_UPDATERS, file, ensure_ascii=False)
+                logging.info('Файл создан, переходим к чтению')
+
+            with open(name, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+                logging.info(f'{data}, файл прочитан')
+                return data
+                
+    def update_data(self, key, name):
+        if not os.path.exists(name):
+            return
+
+        params = self.get_data(name)
+        params[key] = params[key] + 1 if isinstance(params[key], int) else not params[key]
+
+        with open(name, 'w', encoding='utf-8') as file:
+            json.dump(DataEconomy.START_UPDATERS, file, ensure_ascii=False)
+
+
+    def get_value(self, key, level):
+        key = key.upper()
+        if key == 'CLICK_MOB':
+            return DataEconomy.CLICK_MOB.get(level), DataEconomy.CLICK_MOB.get(level + 1)
+        elif key == 'X':
+            return DataEconomy.X.get(level), DataEconomy.X.get(level+ 1)
+        elif key == 'CUSTOM_X':
+            return DataEconomy.CUSTOM_X.get(level), DataEconomy.CUSTOM_X.get(level + 1)
+        elif key == 'KEY':
+            return DataEconomy.KEY.get(level), DataEconomy.KEY.get(level + 1)
+        elif key == 'LEVEL_UPGRADE':
+            return DataEconomy.LEVEL_UPGRADE.get(level), DataEconomy.LEVEL_UPGRADE.get(level + 1)
+        elif key == 'MAX_MONEY':
+            return DataEconomy.MAX_MONEY.get(level), DataEconomy.MAX_MONEY.get(level+ 1)
+        elif key == 'DISCOUNT_SHOP':
+            return DataEconomy.DISCOUNT_SHOP.get(level), DataEconomy.DISCOUNT_SHOP.get(level + 1)
+
+    def get_only_effect(self, key, level):
+        return self.get_value(key, level)[0]['effect']
