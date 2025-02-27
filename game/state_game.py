@@ -47,7 +47,7 @@ class Game:
         self.time_alert = 0
         self.text_alert = 0
 
-        self.overlay_alert: Surface = pygame.Surface((250, 30))
+        self.overlay_alert: Surface = pygame.Surface((250, 30), pygame.SRCALPHA)
         self.overlay_alert.fill((0, 0, 0, 0))
         self.overlay_rect_alert: Rect = pygame.Rect(0, 0, 250, 30)
 
@@ -60,18 +60,18 @@ class Game:
                 'max_money', self.params_economic_data['max_money'])
 
         # logic for overlay
-        self.overlay = pygame.Surface((300, 70))
+        self.overlay = pygame.Surface((400, 70), pygame.SRCALPHA)
         self.overlay.fill((0, 0, 0, 0))
 
         # basic info
         self.font = pygame.font.Font(None, 36)
 
         # position
-        self.overlay_rect = pygame.Rect(0, 0, 300, 70)
+        self.overlay_rect = pygame.Rect(0, 0, 400, 70)
         
         # update
 
-        self.overlay_update = pygame.Surface((512, 200))
+        self.overlay_update = pygame.Surface((512, 200), pygame.SRCALPHA)
         self.overlay_update.fill((0, 0, 0 ,0))
         self.overlay_update_react = pygame.Rect(0, 0, 512, 200)
 
@@ -125,7 +125,7 @@ class Game:
         pygame.draw.rect(self.overlay_alert, (0, 0, 0, 0), self.overlay_rect_alert, 0)
         text = self.font.render(f'{self.text_alert}', True, (255, 0, 0))
         self.overlay_alert.blit(text, (self.overlay_rect_alert.x + 10, self.overlay_rect_alert.y + 5))
-        self.screen.blit(self.overlay_alert, (300, 10))
+        self.screen.blit(self.overlay_alert, (420, 10))
 
     def render_update_inforamtion(self):
         
@@ -174,13 +174,15 @@ class Game:
         
         self.money -= final_price
         new_data = self.updater_state_economic.update_data(key, self.updater_state_economic.setting_updaters)
-        if key == 'your_money':
-            self.your_money = price_next_level['effect']
+        if key == 'max_money':
+            self.max_money = price_next_level['effect']
         self.params_economic_data = new_data 
         logging.info(f'обновление закончено текущий уровень всего : {self.params_economic_data}')
         
-
-
+    # самое интересное , сохранение параметров при выходе из игры
+    def saves(self):
+        # пока не успеваю сделать, будет дальнейшим режимом
+        pass
 
 class SaveData:
     # test create saves
@@ -245,4 +247,4 @@ class SaveData:
 
     def get_only_effect(self, key, level):
         return self.get_value(key, level)[0]['effect']
-
+    
