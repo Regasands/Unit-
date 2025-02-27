@@ -26,8 +26,12 @@ if __name__ == '__main__':
     game = Game(screen, field_menu=field_menu, field_shop=field_shop, field_game=field)
     state_engine = State()
 
+    background = pygame.image.load("sprites/background.png")
+    background = pygame.transform.scale(background, (800, 800))
+
     while state_engine.start_game:
         for event in pygame.event.get():
+            screen.blit(background, (0, 0))
             if event.type == pygame.QUIT:
                 state_engine.start_game = False
                 break
@@ -60,7 +64,6 @@ if __name__ == '__main__':
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
-                                        screen.fill((0, 0, 0))
                                         continue
                                 x, y = field.get_coords_by_mouse_pos(event.pos)
                                 field.set_structure(None, (x, y))
@@ -71,8 +74,6 @@ if __name__ == '__main__':
                         if state_engine.objects_moving:
                             state_engine.objects_moving = False
                             field.finish_moving()
-                game.field_game.render_structures(screen)
-
             # магазин улучшений `
             elif state_engine.shop:
                 pass
@@ -82,13 +83,14 @@ if __name__ == '__main__':
                 game.field_menu.render_structures(screen)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     object_ = field_menu.get_structure_by_mouse_pos(event.pos)
-                    if object_ is None:
-                        break
-                    if object_.name == 'Start':
-                        state_engine.menu = False
-                        state_engine.game = True
-                        screen.fill((0, 0, 0))
-        game.render_text_price()
+                    for sprite in field_menu.get_structure_sprites():
+                        if sprite.rect.collidepoint(event.pos):
+                            state_engine.menu = False
+                            state_engine.game = True
+        if state_engine.game:
+            game.render_text_price()
+            game.update_price_and_money()
+            game.field_game.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)

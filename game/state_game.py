@@ -1,11 +1,11 @@
-from logging import addLevelName, log
+from logging import addLevelName
 import logging
-import os
 import re
 from sys import pycache_prefix
 import pygame
 import json
-
+import time
+import os
 from pygame.rect import RectType
 from map.texture import Mob
 from datafile.config import DataEconomy
@@ -40,6 +40,7 @@ class Game:
         #logic timer
         self.clock = pygame.time.Clock()
         self.update_text_time = 0
+        self.update_delta_time = 1
         
         # alert logic
         self.alert: bool = False
@@ -67,24 +68,22 @@ class Game:
 
         # position
         self.overlay_rect = pygame.Rect(0, 0, 300, 70)
+<<<<<<< HEAD
         
         # update
 
         self.overlay_update = pygame.Surface((512, 256))
         self.overlay_update.fill((0, 0, 0 ,0))
         self.overlay_update_react = pygame.Rect(0, 0, 512, 256)
+=======
+
+>>>>>>> b3b3b1bf2cb2388cda06d276a5846095c300e7db
 
     def render(self):
         self.screen.fill((0, 0, 0))
         self.field_game.render_structures(self.screen)
 
     def render_text_price(self) -> None:
-        # check time
-        self.update_text_time += 1 
-        if self.update_text_time > 100:
-            self.update_price_and_money()
-            self.update_text_time = 0
-
         # draw text
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
         text = self.font.render(f"Your money: {self.money}/{self.max_money}", True, (255, 255, 255))
@@ -95,7 +94,12 @@ class Game:
         self.screen.blit(self.overlay, (10, 10))
 
     def update_price_and_money(self):
-        start_point = self.params_economic_data['profit']
+        # check time
+        if self.update_text_time > time.time():
+            return
+        self.update_text_time = time.time() + self.update_delta_time
+
+        start_point = 1
         for list_ in self.field_game.field:
             for elem in list_:
                 if isinstance(elem, Mob):
@@ -118,7 +122,7 @@ class Game:
         if not self.alert:
             return
         self.time_alert -= 1
-        
+
         if self.time_alert <= 0:
             self.alert = False
         pygame.draw.rect(self.overlay_alert, (0, 0, 0, 0), self.overlay_rect_alert, 0)
@@ -164,7 +168,7 @@ class SaveData:
                 return DataEconomy.START_UPDATERS
         try:
             with open(name, 'r', encoding='utf-8') as file:
-                
+
                 data =  json.load(file)
                 logging.info('файл успешно прочитан')
                 return data
@@ -178,7 +182,7 @@ class SaveData:
                 data = json.load(file)
                 logging.info(f'{data}, файл прочитан')
                 return data
-                
+
     def update_data(self, key, name):
         if not os.path.exists(name):
             return
