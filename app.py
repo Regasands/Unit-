@@ -31,16 +31,12 @@ if __name__ == '__main__':
 
     while state_engine.start_game:
         for event in pygame.event.get():
-            screen.blit(background, (0, 0))
             if event.type == pygame.QUIT:
                 state_engine.start_game = False
                 break
 
             # ИГРА
             if state_engine.game:
-                if state_engine.objects_moving:
-                    mouse_pos = pygame.mouse.get_pos()
-                    field.set_moving_pos(mouse_pos)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         for sprite in field.get_structure_sprites():
@@ -80,18 +76,23 @@ if __name__ == '__main__':
 
             # МЕНЮ
             elif state_engine.menu:
-                game.field_menu.render_structures(screen)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     object_ = field_menu.get_structure_by_mouse_pos(event.pos)
                     for sprite in field_menu.get_structure_sprites():
                         if sprite.rect.collidepoint(event.pos):
                             state_engine.menu = False
                             state_engine.game = True
+        screen.blit(background, (0, 0))
         if state_engine.game:
+            if state_engine.objects_moving:
+                mouse_pos = pygame.mouse.get_pos()
+                field.set_moving_pos(mouse_pos)
             game.render_text_price()
             game.update_price_and_money()
             game.field_game.render_structures(screen)
-            # game.field_game.render_animations(screen)
+            game.field_game.render_animations(screen)
+        elif state_engine.menu:
+            game.field_menu.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
         game.clock.tick(100)
