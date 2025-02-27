@@ -2,6 +2,7 @@ from logging import addLevelName
 import logging
 import re
 import pygame
+import time
 
 from map.texture import Mob
 
@@ -35,6 +36,7 @@ class Game:
         #logic timer
         self.clock = pygame.time.Clock()
         self.update_text_time = 0
+        self.update_delta_time = 1 # через сколько обновлять в секундах
         
         # alert logic
         self.alert: bool = False
@@ -64,12 +66,6 @@ class Game:
         self.field_game.render_structures(self.screen)
 
     def render_text_price(self) -> None:
-        # check time
-        self.update_text_time += 1 
-        if self.update_text_time > 100:
-            self.update_price_and_money()
-            self.update_text_time = 0
-
         # draw text
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
         text = self.font.render(f"Your money: {self.money}", True, (255, 255, 255))
@@ -80,6 +76,11 @@ class Game:
         self.screen.blit(self.overlay, (10, 10))
 
     def update_price_and_money(self):
+        # check time
+        if self.update_text_time > time.time():
+            return
+        self.update_text_time = time.time() + self.update_delta_time
+
         start_point = 1
         for list_ in self.field_game.field:
             for elem in list_:
