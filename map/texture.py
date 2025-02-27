@@ -1,4 +1,64 @@
 import pygame
+from PIL import Image
+
+
+class AnimatedGif:
+    def __init__(self, gif_path):
+        self.gif_path = gif_path
+        self.frames = []
+        self.durations = []
+        self.load_gif()
+        self.active = False
+        self.current_frame_index = 0
+        self.last_update = 0
+        self.start_time = 0
+        self.rect = None
+        self.fade_duration = None
+
+    def load_gif(self):
+        """Load all frames from the GIF along with their durations."""
+        pil_image = Image.open(self.gif_path)
+        try:
+            while True:
+                frame = pil_image.convert("RGBA")
+                mode = frame.mode
+                size = frame.size
+                data = frame.tobytes()
+                py_frame = pygame.image.fromstring(data, size, mode)
+                self.frames.append(py_frame)
+                self.durations.append(pil_image.info.get("duration", 100))
+                pil_image.seek(pil_image.tell() + 1)
+        except EOFError:
+            pass
+        self.total_frames = len(self.frames)
+
+    def start(self, rect, fade_duration):
+        self.active = True
+        self.rect = rect
+        self.fade_duration = fade_duration
+        self.current_frame_index = 0
+        self.last_update = pygame.time.get_ticks()
+        self.start_time = self.last_update
+
+    def update(self, screen):
+        if not self.active:
+            return
+
+        now = pygame.time.get_ticks()
+        elapsed = now - self.start_time
+        fade_factor = max(0, 1 - elapsed / self.fade_duration)
+        if fade_factor == 0:
+            self.active = False
+            return
+        if now - self.last_update >= self.durations[self.current_frame_index]:
+            self.current_frame_index = (self.current_frame_index + 1) % self.total_frames
+            self.last_update = now
+        frame = self.frames[self.current_frame_index]
+        if frame.get_size() != (self.rect.width, self.rect.height):
+            frame = pygame.transform.scale(frame, (self.rect.width, self.rect.height))
+        frame_copy = frame.copy()
+        frame_copy.set_alpha(int(255 * fade_factor))
+        screen.blit(frame_copy, self.rect)
 
 
 class Structure:
