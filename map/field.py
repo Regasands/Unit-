@@ -1,12 +1,8 @@
 import logging
 from math import ceil
 
-<<<<<<< HEAD
 from datafile.config import DataEconomy
-=======
 import pygame.sprite
-
->>>>>>> 30fe0477f2ddaf64374b6b156bf4c5f9af5cd1f4
 from map.texture import *
 
 
@@ -215,6 +211,7 @@ class FieldShop(Field):
         elif self.last_scroll < 0:
             self.last_scroll = len(self.last_scroll) - 1
 
-    
 
-        
+    def get_key(self):
+        return self.keys_upgrade[self.last_scroll]
+

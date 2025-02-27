@@ -1,4 +1,4 @@
-from logging import addLevelName
+from logging import addLevelName, disable
 import logging
 import re
 from sys import pycache_prefix
@@ -131,18 +131,18 @@ class Game:
 
         # рендерю информацию об улучшении, на этом уровне не провожу само улучшение
         
-        upgrade_type = self.shop.uppgrade_key
-        current_level = self.params_economic_data[key]
+        upgrade_type = self.field_shop.get_key()
+        current_level = self.params_economic_data[upgrade_type]
         states = self.updater_state_economic.get_value(upgrade_type, current_level)
         if current_level == 8:
-            text_1 = self.front.render(f'You have max level. Current effect - {self.states[0]["effect"]}. Level - 8', True, (255, 255, 0))
+            text_1 = self.font.render(f'You have max level. Current effect - {self.states[0]["effect"]}. Level - 8', True, (255, 255, 0))
             text_2 = False
         else:
 
             current_discount =self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
 
-            text_1 = self.front.render(f'Upgrade {key} for {states[1]["price"] * current_discount}. Upgrade level -- {current_level + 1}', True, (255, 255, 0))
-            text_2 = self.front.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
+            text_1 = self.font.render(f'Upgrade {key} for {states[1]["price"] * current_discount}. Upgrade level -- {current_level + 1}', True, (255, 255, 0))
+            text_2 = self.font.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
 
         self.overlay_update.blit(text_1, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 5))
 
@@ -154,10 +154,27 @@ class Game:
 
         # проверяю и делаю улучшение, если все условия соблюдены
 
-        key = self.field_shop.last_scroll
-        price_next_level = self.updater_state_economic.get_value(key, self.params_economic_data[key])
+        key = self.field_shop.get_key()
+        
+        # получаем следующий уровень цены нашего вопроса
+        price_next_level = self.updater_state_economic.get_value(key, self.params_economic_data[key])[1]
+        price_next = price_next_level.get('price')
+        if price_next is None:
+            logging.info('Ошибка обновление бонусов или достигнут максимальный уровень')
+            self.set_alert(100, 'Уже максимальный уровнь')
+            return
+        # получаем скидку 
+        dicount = self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
 
+        final_price = price_next * discount
+        if final_price > self.money:
+            self.set_alert(100, 'Не хватает денег')
+            return
+        
+        self.money -= final_price
         self.updater_state_economic.update_data(key, self.updater_state_economic.setting_updaters)
+
+        logging.info(f'обновление закончено текущий уровень всего : {self.params_economic_data}')
 
 
 

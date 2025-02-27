@@ -87,12 +87,12 @@ if __name__ == '__main__':
                                         elif structure.name == 'Start':
                                                 pass
                                         elif structure.name == 'BuyParam':
-                                                pass
+                                                logging.info('Пошло обновление')
+                                                game.complite_upgrade_updates() 
                                         elif structure.name == 'NextParam':
                                                 pass
                                         elif structure.name == 'BackParam':
                                                 pass
-
             # МЕНЮ
             elif state_engine.menu:
                 game.field_menu.render_structures(screen)
@@ -107,6 +107,10 @@ if __name__ == '__main__':
             game.render_text_price()
             game.update_price_and_money()
             game.field_game.render_structures(screen)
+
+        elif state_engine.shop:
+                game.field_shop.render_structures(screen)
+                game.render_update_inforamtion()
             # game.field_game.render_animations(screen)
         game.render_text_alert()
         pygame.display.flip()
