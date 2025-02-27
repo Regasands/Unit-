@@ -128,6 +128,9 @@ class Game:
         self.screen.blit(self.overlay_alert, (300, 10))
 
     def render_update_inforamtion(self):
+
+        # рендерю информацию об улучшении, на этом уровне не провожу само улучшение
+        
         upgrade_type = self.shop.uppgrade_key
         current_level = self.params_economic_data[key]
         states = self.updater_state_economic.get_value(upgrade_type, current_level)
@@ -147,7 +150,15 @@ class Game:
             self.overlay_update.blit( text_2, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 40))
         self.screen.blit(self.overlay_update, (50, 60))
 
-        
+    def complite_upgrade_updates(self):
+
+        # проверяю и делаю улучшение, если все условия соблюдены
+
+        key = self.field_shop.last_scroll
+        price_next_level = self.updater_state_economic.get_value(key, self.params_economic_data[key])
+
+        self.updater_state_economic.update_data(key, self.updater_state_economic.setting_updaters)
+
 
 
 class SaveData:
@@ -210,3 +221,4 @@ class SaveData:
 
     def get_only_effect(self, key, level):
         return self.get_value(key, level)[0]['effect']
+

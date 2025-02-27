@@ -1,6 +1,7 @@
 import logging
 from math import ceil
 
+from datafile.config import DataEconomy
 from map.texture import *
 
 
@@ -180,9 +181,23 @@ class FieldShop(Field):
             button = Button(x)
             self.field[button.y][button.x] = button
 
+        # запоминаем первый ключ и получаем значения для скрола
+        self.keys_upgrade = list(DataEconomy.START_UPDATERS.keys())
+        self.keys_upgrade.remove('money')
+        self.keys_upgrade.remove('profit')
+        logging.info(self.keys_upgrade)
 
-    def check_your_bust(self):
-        pass
+        self.last_scroll = 0
 
-    def add_bust(self):
-        pass
+
+    def update_last_scroll(_boll: bool):
+        # update last_scroll if bool + 1 else bool - 1
+        self.last_scroll  = self.last_scroll + 1 if _boll else set.last_scroll - 1
+        if self.last_scroll >= len(self.keys_upgrade):
+            self.last_scroll = 0
+        elif self.last_scroll < 0:
+            self.last_scroll = len(self.last_scroll) - 1
+
+    
+
+        
