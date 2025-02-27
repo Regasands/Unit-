@@ -88,11 +88,13 @@ class Button(Structure):
             self.x, self.y = -2, -1
 
         elif name == 'NextParam':
-            self.x, self.y = 5, -2
+            self.x, self.y = 7, -3
         elif name == 'BackParam':
-            self.x, self.y = 3, -2
-        elif name == 'BuyUpdate':
-            self.x, self.y = 4, -2
+            self.x, self.y = 2, -3
+        elif name == 'BuyParam':
+            self.x, self.y = 4, -3
+        elif name == 'Start2':
+            self.x, self.y = -1, -1
         else:
             self.x, self.y = -1, -1
         super().__init__(name)

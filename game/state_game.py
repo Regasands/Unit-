@@ -128,7 +128,7 @@ class Game:
         self.screen.blit(self.overlay_alert, (300, 10))
 
     def render_update_inforamtion(self):
-
+        
         # рендерю информацию об улучшении, на этом уровне не провожу само улучшение
         
         upgrade_type = self.field_shop.get_key()
@@ -144,12 +144,12 @@ class Game:
             text_1 = self.font.render(f'Upgrade {upgrade_type}. Price:  {states[1]["price"] * current_discount}', True, (255, 255, 0))
             text_2 = self.font.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
             text_3 = self.font.render(f'Current level: {current_level}/{8}', True, (255, 255, 0))
+        pygame.draw.rect(self.overlay_update, (0, 0, 0, 0), self.overlay_update_react, 0)
         self.overlay_update.blit(text_1, (self.overlay_update_react.x + 30, self.overlay_update_react.y + 20))
-
         if text_2:
             self.overlay_update.blit( text_2, (self.overlay_update_react.x + 30, self.overlay_update_react.y + 60))
             self.overlay_update.blit(text_3, (self.overlay_update_react.x + 300, self.overlay_update_react.y + 150))
-        self.screen.blit(self.overlay_update, (150, 100))
+        self.screen.blit(self.overlay_update, (150, 300))
             
     def complite_upgrade_updates(self):
 
@@ -173,9 +173,12 @@ class Game:
             return
         
         self.money -= final_price
-        self.updater_state_economic.update_data(key, self.updater_state_economic.setting_updaters)
-
+        new_data = self.updater_state_economic.update_data(key, self.updater_state_economic.setting_updaters)
+        if key == 'your_money':
+            self.your_money = price_next_level['effect']
+        self.params_economic_data = new_data 
         logging.info(f'обновление закончено текущий уровень всего : {self.params_economic_data}')
+        
 
 
 
@@ -214,10 +217,13 @@ class SaveData:
             return
 
         params = self.get_data(name)
+        logging.info(params[key])
         params[key] = params[key] + 1 if isinstance(params[key], int) else not params[key]
+        logging.info(params[key])
 
         with open(name, 'w', encoding='utf-8') as file:
-            json.dump(DataEconomy.START_UPDATERS, file, ensure_ascii=False)
+            json.dump(params,  file, ensure_ascii=False)
+        return params
 
 
     def get_value(self, key, level):

@@ -189,7 +189,7 @@ class FieldShop(Field):
                  height: int = 10):
         super().__init__(width, height)
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
-        self.button_box = ['Menu', 'Start', 'BuyParam', 'NextParam', 'BackParam']
+        self.button_box = ['Menu', 'Start2', 'BuyParam', 'NextParam', 'BackParam']
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
@@ -203,13 +203,13 @@ class FieldShop(Field):
         self.last_scroll = 0
 
 
-    def update_last_scroll(_boll: bool):
+    def update_last_scroll(self, _boll: bool):
         # update last_scroll if bool + 1 else bool - 1
-        self.last_scroll  = self.last_scroll + 1 if _boll else set.last_scroll - 1
+        self.last_scroll  = self.last_scroll + 1 if _boll else self.last_scroll - 1
         if self.last_scroll >= len(self.keys_upgrade):
             self.last_scroll = 0
         elif self.last_scroll < 0:
-            self.last_scroll = len(self.last_scroll) - 1
+            self.last_scroll = len(self.keys_upgrade) - 1
 
 
     def get_key(self):

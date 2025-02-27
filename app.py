@@ -1,4 +1,6 @@
 import logging
+from math import log
+from os import stat_result
 import re
 import pygame
 from game.state_game import Game, State
@@ -79,24 +81,26 @@ if __name__ == '__main__':
             elif state_engine.shop:
                 game.field_shop.render_structures(screen)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                        object_ = field_shop.get_structure_by_mouse_pos(event.pos)
-                        for sprite in field_menu.get_structure_sprites():
-                                if sprite.rect.collidepoint(event.pos):
-                                        structure = game.field_shop.get_structure_by_mouse_pos(event.pos)
-                                        if not isinstance(structure, Button):
-                                                break
-                                        if structure.name == 'Menu':
-                                                pass
-                                        elif structure.name == 'Start':
-                                                pass
-                                        elif structure.name == 'BuyParam':
-                                                logging.info('Пошло обновление')
-                                                game.complite_upgrade_updates() 
-                                        elif structure.name == 'NextParam':
-                                                pass
-                                        elif structure.name == 'BackParam':
-                                                pass
-            # МЕНЮ
+                    for sprite in field_menu.get_structure_sprites():
+                        structure = field_shop.get_structure_by_mouse_pos(event.pos)
+                        logging.info(structure)
+                        if not isinstance(structure, Button):
+                            break
+                        
+                        if structure.name == 'Menu':
+                            state_engine.menu = True
+                            state_engine.shop = False
+                        elif structure.name == 'Start2':
+                            state_engine.game = True
+                            state_engine.shop = False
+                        elif structure.name == 'BuyParam':
+                            logging.info('Пошло обновление')
+                            game.complite_upgrade_updates() 
+                        elif structure.name == 'NextParam':
+                            game.field_shop.update_last_scroll(True)
+                        elif structure.name == 'BackParam':
+                            game.field_shop.update_last_scroll(False)
+        # МЕНЮ
             elif state_engine.menu:
                 game.field_menu.render_structures(screen)
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -114,6 +118,7 @@ if __name__ == '__main__':
         elif state_engine.shop:
                 game.field_shop.render_structures(screen)
                 game.render_update_inforamtion()
+                game.render_text_price()
             # game.field_game.render_animations(screen)
         game.render_text_alert()
         pygame.display.flip()
