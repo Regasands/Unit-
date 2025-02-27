@@ -2,6 +2,7 @@ from logging import addLevelName, log
 import logging
 import os
 import re
+from sys import pycache_prefix
 import pygame
 import json
 
@@ -67,6 +68,11 @@ class Game:
         # position
         self.overlay_rect = pygame.Rect(0, 0, 300, 70)
         
+        # update
+
+        self.overlay_update = pygame.Surface((512, 256))
+        self.overlay_update.fill((0, 0, 0 ,0))
+        self.overlay_update_react = pygame.Rect(0, 0, 512, 256)
 
     def render(self):
         self.screen.fill((0, 0, 0))
@@ -99,6 +105,7 @@ class Game:
         self.money += self.profit
         if self.money >= self.max_money:
             self.money = self.max_money
+
     # пробновая версия алертов
     def set_alert(self, time, text):
         if self.alert:
@@ -119,7 +126,27 @@ class Game:
         self.overlay_alert.blit(text, (self.overlay_rect_alert.x + 10, self.overlay_rect_alert.y + 5))
         self.screen.blit(self.overlay_alert, (300, 10))
 
+    def render_update_inforamtion(self):
+        upgrade_type = self.shop.uppgrade_key
+        current_level = self.params_economic_data[key]
+        states = self.updater_state_economic.get_value(upgrade_type, current_level)
+        if current_level == 8:
+            text_1 = self.front.render(f'You have max level. Current effect - {self.states[0]["effect"]}. Level - 8', True, (255, 255, 0))
+            text_2 = False
+        else:
 
+            current_discount =self.updater_state_economic.get_only_effect('discount_shop', self.params_economic_data['discount_shop'])
+
+            text_1 = self.front.render(f'Upgrade {key} for {states[1]["price"] * current_discount}. Upgrade level -- {current_level + 1}', True, (255, 255, 0))
+            text_2 = self.front.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
+
+        self.overlay_update.blit((text_1, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 5))
+
+        if text_2:
+            self.overlay_update.blit(source: (text_2, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 40))
+        self.screen.blit(self.overlay_update, (50, 60))
+
+        
 
 
 class SaveData:
