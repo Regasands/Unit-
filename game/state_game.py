@@ -68,16 +68,13 @@ class Game:
 
         # position
         self.overlay_rect = pygame.Rect(0, 0, 300, 70)
-<<<<<<< HEAD
         
         # update
 
         self.overlay_update = pygame.Surface((512, 256))
         self.overlay_update.fill((0, 0, 0 ,0))
         self.overlay_update_react = pygame.Rect(0, 0, 512, 256)
-=======
 
->>>>>>> b3b3b1bf2cb2388cda06d276a5846095c300e7db
 
     def render(self):
         self.screen.fill((0, 0, 0))
@@ -144,10 +141,10 @@ class Game:
             text_1 = self.front.render(f'Upgrade {key} for {states[1]["price"] * current_discount}. Upgrade level -- {current_level + 1}', True, (255, 255, 0))
             text_2 = self.front.render(f'Current effect {states[0]["effect"]}. Next effect {states[1]["effect"]}', True, (255, 255, 0))
 
-        self.overlay_update.blit((text_1, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 5))
+        self.overlay_update.blit(text_1, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 5))
 
         if text_2:
-            self.overlay_update.blit(source: (text_2, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 40))
+            self.overlay_update.blit( text_2, (self.overlay_update_react.x + 5, self.overlay_update_react.y + 40))
         self.screen.blit(self.overlay_update, (50, 60))
 
         
