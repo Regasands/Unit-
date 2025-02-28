@@ -1,3 +1,4 @@
+from io import SEEK_CUR
 from logging import addLevelName, disable
 import logging
 import re
@@ -7,6 +8,7 @@ import json
 import time
 import os
 from pygame.rect import RectType
+from enemy.stone import Stone
 from map.texture import Mob
 from datafile.config import DataEconomy
 
@@ -32,6 +34,7 @@ class State:
         self.end = False
 
 
+
 class Music:
     pass
 
@@ -53,6 +56,11 @@ class Game:
         self.alert: bool = False
         self.time_alert = 0
         self.text_alert = 0
+        # time mob
+        self.time_mob_move  = 5
+        self.update_text_time_mob = 0
+        self.current_time = 0
+        self.sp_mob = []
 
         self.overlay_alert: Surface = pygame.Surface((250, 30), pygame.SRCALPHA)
         self.overlay_alert.fill((0, 0, 0, 0))
@@ -205,7 +213,21 @@ class Game:
         self.money = self.params_economic_data['money']
         self.profit = self.params_economic_data['profit']
         self.max_money = self.updater_state_economic.get_only_effect('max_money', self.params_economic_data['max_money'])    
-
+    
+    # mob spawn and renderingkl
+    def spawn_enemy(self):
+        if self.update_text_time_mob >= self.time_mob_move * 300 // self.x_hard:
+            self.sp_mob.append(self.field_game.create_mob())
+            self.update_text_time_mob = 0
+        else:
+            self.update_text_time_mob += 1
+        if self.current_time >= self.time_mob_move:
+            self.sp_mob = self.field_game.move_mob(self.sp_mob)
+            self.current_time = 0
+        else:
+            self.current_time += 1
+    
+    
 
 class SaveData:
     # test create saves

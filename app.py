@@ -5,6 +5,7 @@ from os import stat_result
 import os
 import re
 import pygame
+from enemy.stone import Stone
 from game.state_game import Game, State
 from map.field import Field, FieldMenu, FieldShop, FieldEnd
 from map.texture import Button, Mob
@@ -85,6 +86,8 @@ if __name__ == '__main__':
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
+                                        continue
+                                if isinstance(struct, Stone):
                                         continue
                                 x, y = field.get_coords_by_mouse_pos(event.pos)
                                 field.set_structure(None, (x, y))
@@ -178,6 +181,7 @@ if __name__ == '__main__':
         elif state_engine.menu:
                 game.field_menu.render_structures(screen)
         game.render_text_alert()
+        game.spawn_enemy()
         pygame.display.flip()
         game.clock.tick(100)
 pygame.quit()
