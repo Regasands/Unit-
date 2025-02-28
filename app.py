@@ -1,3 +1,4 @@
+from abc import ABCMeta
 import logging
 from math import log
 from os import stat_result
@@ -64,14 +65,21 @@ if __name__ == '__main__':
                                         if struct.name == 'Menu':
                                                 state_engine.menu = True
                                         elif struct.name == 'Buy':
-                                                x, y = game.field_game.get_index_objects(None)
-                                                if x == 'full':
-                                                        game.set_alert(50, 'Full field')
-                                                elif game.money >= 10:
-                                                        game.money -= 10
-                                                        game.field_game.field[y][x] = Mob('grass', 0, 7)
-                                                else:
-                                                        game.set_alert(50, 'Need more money')
+                                                click = game.get_effect('click_mob')
+                                                for i in range(click):
+                                                    x, y = game.field_game.get_index_objects(None)
+                                                    level_mob = game.get_effect('level_upgrade')
+                                                    x_factor = game.x_hard / game.get_effect('x')
+                                                    mob = Mob('grass', 0, level_mob)
+                                                    logging.info(f'{level_mob}, {x_factor}')
+                                                    if x == 'full':
+                                                            game.set_alert(50, 'Full field')
+                                                    elif game.money >= mob.cost * x_factor:
+                                                            game.money -= mob.cost * x_factor
+                                                            game.money = int(game.money)
+                                                            game.field_game.field[y][x] = mob
+                                                    else:
+                                                            game.set_alert(50, 'Need more money')
                                                 state_engine.game = True
                                         elif struct.name == 'Upgrade':
                                                 state_engine.shop = True
@@ -169,6 +177,6 @@ if __name__ == '__main__':
                 game.field_menu.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
-        game.clock.tick(10)
+        game.clock.tick(100)
 pygame.quit()
 

@@ -7,22 +7,22 @@ class DataEconomy:
         'level_upgrade': 0,
         'max_money': 0,
         'discount_shop': 0,
-        'money': 10000,
+        'money': 100,
         'profit': 1
     }
 
 
     CLICK_MOB = {
-        0: {'price': 300, 'effect': 1},
-        1: {'price': 800, 'effect': 2},
-        2: {'price': 1500, 'effect': 4},
-        3: {'price': 2800, 'effect': 7},
-        4: {'price': 4500, 'effect': 10},
-        5: {'price': 7200, 'effect': 15},
-        6: {'price': 11000, 'effect': 21},
-        7: {'price': 16000, 'effect': 28},
-        8: {'price': 23000, 'effect': 36},
-        9: {'price': 32000, 'effect': 45}
+        0: {'price': 500, 'effect': 1},
+        1: {'price': 1500, 'effect': 2},
+        2: {'price': 4000, 'effect': 4},
+        3: {'price': 8000, 'effect': 7},
+        4: {'price': 9000, 'effect': 10},
+        5: {'price': 15000, 'effect': 13},
+        6: {'price': 20000, 'effect': 17},
+        7: {'price': 25000, 'effect': 20},
+        8: {'price': 32000, 'effect': 25},
+        9: {'price': 50000, 'effect': 30}
     }
 
     X = {

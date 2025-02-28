@@ -191,8 +191,8 @@ class Game:
         pass
 
     # мало, но приятно получаем основные параметры/баффы
-    def get_effect(name: str):
-        level_effect = self.params_economic_data['name']
+    def get_effect(self, name: str):
+        level_effect = self.params_economic_data[name]
         return self.updater_state_economic.get_only_effect(name, level_effect)
     
     def reset_simple(self):
