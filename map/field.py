@@ -1,14 +1,13 @@
-import copy
 import logging
-from dataclasses import field
-from math import ceil, e
 import random
+from math import ceil
 
-from pygame.rect import RectType
-from datafile.config import DataEconomy
 import pygame.sprite
-from map.texture import *
+
+from datafile.config import DataEconomy
 from enemy.stone import Stone
+from map.texture import *
+
 
 class Field:
     """
@@ -58,7 +57,8 @@ class Field:
                     continue
                 sprite = pygame.sprite.Sprite()
                 sprite_size = cell_size
-                if type(structure) is Button and (structure.name == "Start" or structure.name == 'DeletUpgrade' or structure.name  == 'HardLevel'):
+                if type(structure) is Button and (
+                        structure.name == "Start" or structure.name == 'DeletUpgrade' or structure.name == 'HardLevel'):
                     sprite_size *= 2
                 sprite.image = pygame.transform.scale(
                     structure.get_image(), (sprite_size, sprite_size)
@@ -187,11 +187,17 @@ class Field:
         except Exception as e:
             logging.error(f'Внезапная ошибка! {e}')
 
-    def create_mob(self, count = 1):
-       y = random.randint(1, self.height - 2)
-       mob = Stone(-1, y)
-       self.field[y][-1] = mob
-       return mob
+    def create_mob(self, count=1):
+        y = random.randint(0, self.height - 1)
+        if y == 0:
+            x = -2
+        elif y == 9:
+            x = -3
+        else:
+            x = -1
+        mob = Stone(x, y)
+        self.field[y][x] = mob
+        return mob
 
     def move_mob(self):
         for line in self.field:
@@ -202,10 +208,6 @@ class Field:
                     if x - 1 >= -self.width:
                         self.field[y][x - 1] = struct
                         struct.x -= 1
-
-
-
-
 
 
 class FieldMenu(Field):
@@ -239,19 +241,16 @@ class FieldShop(Field):
 
         self.last_scroll = 0
 
-
     def update_last_scroll(self, _boll: bool):
         # update last_scroll if bool + 1 else bool - 1
-        self.last_scroll  = self.last_scroll + 1 if _boll else self.last_scroll - 1
+        self.last_scroll = self.last_scroll + 1 if _boll else self.last_scroll - 1
         if self.last_scroll >= len(self.keys_upgrade):
             self.last_scroll = 0
         elif self.last_scroll < 0:
             self.last_scroll = len(self.keys_upgrade) - 1
 
-
     def get_key(self):
         return self.keys_upgrade[self.last_scroll]
-
 
 
 class FieldEnd(Field):
@@ -264,4 +263,3 @@ class FieldEnd(Field):
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
-            

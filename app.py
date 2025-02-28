@@ -163,9 +163,9 @@ if __name__ == '__main__':
 
         if state_engine.game:
             game.spawn_enemy()
+            game.field_game.render_structures(screen)
             game.render_text_price()
             game.update_price_and_money()
-            game.field_game.render_structures(screen)
 
         elif state_engine.shop:
             game.field_shop.render_structures(screen)
