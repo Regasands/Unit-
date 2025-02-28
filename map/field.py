@@ -1,4 +1,6 @@
+import copy
 import logging
+from dataclasses import field
 from math import ceil, e
 import random
 
@@ -186,29 +188,26 @@ class Field:
             logging.error(f'Внезапная ошибка! {e}')
 
     def create_mob(self, count = 1):
-       y = random.randint(1, self.height- 2)
-       mob = Stone(y, -1)
+       y = random.randint(1, self.height - 2)
+       mob = Stone(-1, y)
        self.field[y][-1] = mob
        return mob
 
-    def move_mob(self, mob_object):
-        sp_ = [elem.is_move for elem in mob_object]
-        sp_2 = list(filter(lambda x: x.is_move, mob_object))
-        while any(sp_):
-            sd = ''
-            for e in sp_2:
-                if e.is_move:
-                    sd = e
-                    e.is_move = False
-            x, y = sd.x, sd.y
-            if sd.x == 0:
-                self.field[y][x] = None
-                mob_object.remove(sd)
-            else:
-                self.field[y][x] = None
-                self.field[y][x - 1] = sd
-            sp_ = [elem.is_move for elem in mob_object]
-        return mob_object
+    def move_mob(self):
+        for line in self.field:
+            for struct in line:
+                if type(struct) is Stone:
+                    x, y = struct.x, struct.y
+                    self.field[y][x] = None
+                    if x - 1 >= -self.width:
+                        self.field[y][x - 1] = struct
+                        struct.x -= 1
+
+
+
+
+
+
 class FieldMenu(Field):
     def __init__(self,
                  width: int = 10,

@@ -7,6 +7,8 @@ import pygame
 import json
 import time
 import os
+
+from fontTools.varLib.mutator import percents
 from pygame.rect import RectType
 from enemy.stone import Stone
 from map.texture import Mob
@@ -216,13 +218,13 @@ class Game:
     
     # mob spawn and renderingkl
     def spawn_enemy(self):
-        if self.update_text_time_mob >= self.time_mob_move * 300 // self.x_hard:
-            self.sp_mob.append(self.field_game.create_mob())
+        if self.update_text_time_mob >= self.time_mob_move * 100 // self.x_hard:
+            self.field_game.create_mob()
             self.update_text_time_mob = 0
         else:
             self.update_text_time_mob += 1
-        if self.current_time >= self.time_mob_move:
-            self.sp_mob = self.field_game.move_mob(self.sp_mob)
+        if self.current_time >= self.time_mob_move * 10:
+            self.field_game.move_mob()
             self.current_time = 0
         else:
             self.current_time += 1

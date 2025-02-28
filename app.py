@@ -165,6 +165,7 @@ if __name__ == '__main__':
                         state_engine = State()
 
         if state_engine.game:
+            game.spawn_enemy()
             game.render_text_price()
             game.update_price_and_money()
             game.field_game.render_structures(screen)
@@ -181,7 +182,6 @@ if __name__ == '__main__':
         elif state_engine.menu:
                 game.field_menu.render_structures(screen)
         game.render_text_alert()
-        game.spawn_enemy()
         pygame.display.flip()
         game.clock.tick(100)
 pygame.quit()
