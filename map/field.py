@@ -1,10 +1,14 @@
+import copy
 import logging
-from math import ceil
+from dataclasses import field
+from math import ceil, e
+import random
 
+from pygame.rect import RectType
 from datafile.config import DataEconomy
 import pygame.sprite
 from map.texture import *
-
+from enemy.stone import Stone
 
 class Field:
     """
@@ -140,6 +144,14 @@ class Field:
                     return x, y
         return 'full', False
 
+    def get_index_objects_2(self, object_):
+        for y in range(1, self.height - 1):
+            for x in range(self.width):
+                if not self.field[y][x] is None:
+                    logging.info(f'({x} {y})')
+                    return x, y
+            return False, False
+
     def render_animations(self, screen):
         for animation in self.animations:
             animation.update(screen)
@@ -154,6 +166,7 @@ class Field:
         try:
             structure = self.get_structure_by_mouse_pos(self.moving_pos)
             if type(structure) is Mob and structure.level == self.moving_structure.level:
+
                 key = keys[structure.key]
                 if structure.level + 1 not in key:
                     self.set_moving_structure(None)
@@ -173,6 +186,26 @@ class Field:
             return False
         except Exception as e:
             logging.error(f'Внезапная ошибка! {e}')
+
+    def create_mob(self, count = 1):
+       y = random.randint(1, self.height - 2)
+       mob = Stone(-1, y)
+       self.field[y][-1] = mob
+       return mob
+
+    def move_mob(self):
+        for line in self.field:
+            for struct in line:
+                if type(struct) is Stone:
+                    x, y = struct.x, struct.y
+                    self.field[y][x] = None
+                    if x - 1 >= -self.width:
+                        self.field[y][x - 1] = struct
+                        struct.x -= 1
+
+
+
+
 
 
 class FieldMenu(Field):
