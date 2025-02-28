@@ -78,6 +78,9 @@ class Game:
         self.overlay_update.fill((0, 0, 0 ,0))
         self.overlay_update_react = pygame.Rect(0, 0, 512, 200)
 
+        # hard_x
+        self.x_hard = 1
+
 
     def render(self):
         self.screen.fill((0, 0, 0))
@@ -88,7 +91,7 @@ class Game:
         pygame.draw.rect(self.overlay, (0, 0, 0, 0), self.overlay_rect, 0)
         text = self.font.render(f"Your money: {self.money}/{self.max_money}", True, (255, arg1, arg2))
 
-        text_2 = self.font.render(f"Your profit: {self.profit}", True, (255, 255, 255))
+        text_2 = self.font.render(f"Your profit: {self.profit}. Game: {self.x_hard}", True, (255, 255, 255))
         self.overlay.blit(text_2, (self.overlay_rect.x + 20, self.overlay_rect.y + 30))
         self.overlay.blit(text, (self.overlay_rect.x + 20, self.overlay_rect.y + 5))
         self.screen.blit(self.overlay, (10, 10))
@@ -159,7 +162,7 @@ class Game:
         # проверяю и делаю улучшение, если все условия соблюдены
 
         key = self.field_shop.get_key()
-        
+        logging.error(key)        
         # получаем следующий уровень цены нашего вопроса
         price_next_level = self.updater_state_economic.get_value(key, self.params_economic_data[key])[1]
         price_next = price_next_level.get('price')
@@ -187,10 +190,24 @@ class Game:
         # пока не успеваю сделать, будет дальнейшим режимом
         pass
 
+    # мало, но приятно получаем основные параметры/баффы
+    def get_effect(name: str):
+        level_effect = self.params_economic_data['name']
+        return self.updater_state_economic.get_only_effect(name, level_effect)
+    
+    def reset_simple(self):
+        self.updater_state_economic.get_reset(self.updater_state_economic.setting_updaters)
+        self.params_economic_data = self.updater_state_economic.get_data(self.updater_state_economic.setting_updaters)
+        self.money = self.params_economic_data['money']
+        self.profit = self.params_economic_data['profit']
+        self.max_money = self.updater_state_economic.get_only_effect('max_money', self.params_economic_data['max_money'])    
+
+
 class SaveData:
     # test create saves
     def __init__(self) -> None:
         self.setting_updaters = 'datafile/saves.json'
+        self.hard_level = 'datafiles/saves_hard.json'
         self.data_ds = {}
 
     def get_data(self, name):
@@ -249,3 +266,6 @@ class SaveData:
     def get_only_effect(self, key, level):
         return self.get_value(key, level)[0]['effect']
     
+    def get_reset(self, name):
+        with open(name, 'w', encoding='utf-8') as file:
+            json.dump(DataEconomy.START_UPDATERS, file, ensure_ascii=False)

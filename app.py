@@ -1,6 +1,7 @@
 import logging
 from math import log
 from os import stat_result
+import os
 import re
 import pygame
 from game.state_game import Game, State
@@ -112,17 +113,28 @@ if __name__ == '__main__':
                             game.field_shop.update_last_scroll(True)
                         elif structure.name == 'BackParam':
                             game.field_shop.update_last_scroll(False)
-                            end = field.finish_moving()
         # МЕНЮ
             elif state_engine.menu:
-                game.field_menu.render_structures(screen)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     object_ = field_menu.get_structure_by_mouse_pos(event.pos)
                     for sprite in field_menu.get_structure_sprites():
                         if sprite.rect.collidepoint(event.pos):
-                            state_engine.menu = False
-                            state_engine.game = True
+                            object_ = field_menu.get_structure_by_mouse_pos(event.pos)
+                            if isinstance(object_, Button):
+                                    if object_.name == 'Start':
+                                            state_engine.menu = False
+                                            state_engine.game =True
+                                            game.x_hard = 1
+                                    elif object_.name == 'HardLevel':
+                                           game.x_hard = 1.5
+                                           state_engine.menu = False
+                                           state_engine.game = True
 
+                                    elif object_.name == 'DeletUpgrade':
+                                           game.reset_simple()
+                                           game.set_alert(10, 'Empty')
+                                           state_engine.menu = False
+                                           state_engine.game = True
             elif state_engine.end:
                 screen.blit(end_background, (0, 0))
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -153,8 +165,10 @@ if __name__ == '__main__':
                 game.render_text_price(arg1 = 0, arg2 = 0)
                 game.set_alert(1000, 'You win')
                 game.field_end.render_structures(screen)
+        elif state_engine.menu:
+                game.field_menu.render_structures(screen)
         game.render_text_alert()
         pygame.display.flip()
-        game.clock.tick(100)
+        game.clock.tick(10)
 pygame.quit()
 

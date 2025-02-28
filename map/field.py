@@ -54,7 +54,7 @@ class Field:
                     continue
                 sprite = pygame.sprite.Sprite()
                 sprite_size = cell_size
-                if type(structure) is Button and structure.name == "Start":
+                if type(structure) is Button and (structure.name == "Start" or structure.name == 'DeletUpgrade' or structure.name  == 'HardLevel'):
                     sprite_size *= 2
                 sprite.image = pygame.transform.scale(
                     structure.get_image(), (sprite_size, sprite_size)
@@ -178,10 +178,9 @@ class FieldMenu(Field):
                  height: int = 10):
         super().__init__(width, height)
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
-        self.button_box = ['Start']
+        self.button_box = ['Start', 'HardLevel', 'DeletUpgrade']
         for x in self.button_box:
             button = Button(x)
-            self.field[button.y][button.x] = button
             self.field[button.y][button.x] = button
 
 

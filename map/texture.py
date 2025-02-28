@@ -95,6 +95,10 @@ class Button(Structure):
             self.x, self.y = 4, -3
         elif name == 'Start2':
             self.x, self.y = -1, -1
+        elif name == 'DeletUpgrade':
+            self.x, self.y = -2, 0
+        elif name == 'HardLevel':
+            self.x, self.y = 4, 2
         else:
             self.x, self.y = -1, -1
         super().__init__(name)
