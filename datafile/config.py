@@ -7,7 +7,7 @@ class DataEconomy:
         'level_upgrade': 0,
         'max_money': 0,
         'discount_shop': 0,
-        'money': 100,
+        'money': 400,
         'profit': 1
     }
 

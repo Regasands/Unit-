@@ -31,7 +31,11 @@ class State:
         # end
         self.end = False
 
-        
+
+class Music:
+    pass
+
+
 class Game:
     def __init__(self, screen: pygame.surface.Surface, field_menu, field_shop, field_game, field_end) -> None: 
         # logic game

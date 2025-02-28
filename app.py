@@ -22,9 +22,11 @@ if __name__ == '__main__':
     logging.info("Приложение запущено")
 
     pygame.init()
+    pygame.mixer.music.load('music.mp3')  # Поддерживает MP3, WAV, OGG
+    pygame.mixer.music.play(loops=-1, start=0.0)
     size: tuple = 800, 800
     screen = pygame.display.set_mode(size)
-    # создание основных поле
+    # создание основных полей
     field = Field()
     field_menu = FieldMenu()
     field_shop = FieldShop()
