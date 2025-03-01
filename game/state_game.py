@@ -57,11 +57,10 @@ class Game:
         self.text_alert = 0
 
         # time mob
-        self.time_mob_move  = 50
-        self.time_for_spawn_mob = 500
-        self.current_time_mob_move = 0
-        self.current_time_mob_spawn = 0
-        self.sp_mob = []
+        self.time_spawn_mob = 0.1
+        self.time_mob_move = 0.1
+        self.x_time_mob_move = 0.2
+        self.x_time_mob_spawn = 5
 
         # create base alert
         self.overlay_alert: Surface = pygame.Surface((250, 30), pygame.SRCALPHA)
@@ -215,7 +214,7 @@ class Game:
         # пока не успеваю сделать, будет дальнейшим режимом
         pass
 
-    # мало, но приятно получаем основные параметры/баффы
+    # мало, но приятно получаем основные параметры баффы
     def get_effect(self, name: str):
         level_effect = self.params_economic_data[name]
         return self.updater_state_economic.get_only_effect(name, level_effect)
@@ -228,20 +227,16 @@ class Game:
         self.profit = self.params_economic_data['profit']
         self.max_money = self.updater_state_economic.get_only_effect('max_money', self.params_economic_data['max_money'])    
     
-    # mob spawn and renderingkl
+    # mob spawn and renderin
     def spawn_enemy(self):
-        if self.current_time_mob_spawn > self.time_for_spawn_mob / self.x_hard:
+        if time.time() > self.time_spawn_mob:
             self.field_game.create_mob()
-            self.current_time_mob_spawn = 0
-        else:
-            self.current_time_mob_spawn += 1
+            self.time_spawn_mob = time.time() + self.x_time_mob_spawn // self.x_hard
 
-        if self.current_time_mob_move >= self.time_mob_move:
+        if time.time() > self.time_mob_move:
             self.field_game.move_mob()
-            self.current_time_mob_move = 0
-        else:
-            self.current_time_mob_move += 1
-        
+            self.time_mob_move = time.time() + self.x_time_mob_move
+
 
 class SaveData:
     # test create saves
@@ -278,20 +273,22 @@ class SaveData:
 
     def get_value(self, key, level):
         key = key.upper()
+        new_level = level + 1
+
         if key == 'CLICK_MOB':
-            return DataEconomy.CLICK_MOB.get(level), DataEconomy.CLICK_MOB.get(level + 1)
+            return DataEconomy.CLICK_MOB.get(level), DataEconomy.CLICK_MOB.get(new_level)
         elif key == 'X':
-            return DataEconomy.X.get(level), DataEconomy.X.get(level+ 1)
+            return DataEconomy.X.get(level), DataEconomy.X.get(new_level)
         elif key == 'CUSTOM_X':
-            return DataEconomy.CUSTOM_X.get(level), DataEconomy.CUSTOM_X.get(level + 1)
+            return DataEconomy.CUSTOM_X.get(level), DataEconomy.CUSTOM_X.get(new_level)
         elif key == 'KEY':
-            return DataEconomy.KEY.get(level), DataEconomy.KEY.get(level + 1)
+            return DataEconomy.KEY.get(level), DataEconomy.KEY.get(new_level)
         elif key == 'LEVEL_UPGRADE':
-            return DataEconomy.LEVEL_UPGRADE.get(level), DataEconomy.LEVEL_UPGRADE.get(level + 1)
+            return DataEconomy.LEVEL_UPGRADE.get(level), DataEconomy.LEVEL_UPGRADE.get(new_level)
         elif key == 'MAX_MONEY':
-            return DataEconomy.MAX_MONEY.get(level), DataEconomy.MAX_MONEY.get(level+ 1)
+            return DataEconomy.MAX_MONEY.get(level), DataEconomy.MAX_MONEY.get(new_level)
         elif key == 'DISCOUNT_SHOP':
-            return DataEconomy.DISCOUNT_SHOP.get(level), DataEconomy.DISCOUNT_SHOP.get(level + 1)
+            return DataEconomy.DISCOUNT_SHOP.get(level), DataEconomy.DISCOUNT_SHOP.get(new_level)
 
     def get_only_effect(self, key, level):
         return self.get_value(key, level)[0]['effect']
