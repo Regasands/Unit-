@@ -42,9 +42,13 @@ if __name__ == '__main__':
     end_background = pygame.transform.scale(end_background, size)
 
     while state_engine.start_game:
+        if state_engine.end:
+                screen.blit(end_background, (0, 0))
+        else:
+                screen.blit( background, (0, 0))
+
 
         for event in pygame.event.get():
-            screen.blit(background, (0, 0))
             if event.type == pygame.QUIT:
                 state_engine.start_game = False
                 break
@@ -121,7 +125,6 @@ if __name__ == '__main__':
 
             # магазин улучшений
             elif state_engine.shop:
-                game.field_shop.render_structures(screen)
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for sprite in field_menu.get_structure_sprites():

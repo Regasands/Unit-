@@ -70,9 +70,6 @@ class Field:
                 if type(structure) is Button and (
                         structure.name == "Start" or structure.name == 'DeletUpgrade' or structure.name == 'HardLevel'):
                     sprite_size *= 2
-                if type(structure) is Mob:
-                    sprite_size *= 1.2
-
                 sprite.image = pygame.transform.scale(
                     structure.get_image(), (sprite_size, sprite_size)
                 )
