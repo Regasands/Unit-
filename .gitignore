@@ -1,2 +1,5 @@
-/venv/
-/app.log
+.venv
+
+# Логи
+*.log
+

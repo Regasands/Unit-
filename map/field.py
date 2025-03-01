@@ -5,9 +5,15 @@ from math import ceil
 import pygame.sprite
 
 from datafile.config import DataEconomy
-from enemy.stone import Stone
+from enemy.base_enemy import Water
 from map.texture import *
 
+
+
+class BaseField:
+    """
+    Перенесем логику в родительские элемент, и в далнейшем переиграем классы полей, для улучшения кода
+    """
 
 class Field:
     """
@@ -18,6 +24,7 @@ class Field:
                  width: int = 10,
                  height: int = 10,
                  ):
+
         # размеры (в клетках)
         self.width, self.height = width, height
 
@@ -36,6 +43,7 @@ class Field:
         self.moving_structure: Structure | None = None
         self.moving_pos: tuple[int, int] | None = None
         self.moving_original_coords: tuple[int, int] | None = None
+
         for button in ['Menu', 'Buy', 'Upgrade']:
             button_ = Button(button)
             self.field[button_.y][button_.x] = button_
@@ -57,26 +65,35 @@ class Field:
                     continue
                 sprite = pygame.sprite.Sprite()
                 sprite_size = cell_size
+
+                # чуть увелчивыаем размеры, тоже поможет
                 if type(structure) is Button and (
                         structure.name == "Start" or structure.name == 'DeletUpgrade' or structure.name == 'HardLevel'):
                     sprite_size *= 2
+                if type(structure) is Mob:
+                    sprite_size *= 1.2
+
                 sprite.image = pygame.transform.scale(
                     structure.get_image(), (sprite_size, sprite_size)
                 )
+
                 rect = pygame.Rect(
                     round((col + self.delta_x - 1) * cell_size),
                     round((row + self.delta_y - 1) * cell_size),
                     sprite_size,
                     sprite_size,
                 )
+
                 sprite.rect = rect
                 self.structure_sprites.add(sprite)
+
         self.add_moving_structure_sprite()
         self.structure_sprites.draw(screen)
 
     def add_moving_structure_sprite(self):  # добавляет к группе
         if self.moving_structure is None:
             return
+
         sprite = pygame.sprite.Sprite()
         sprite.image = pygame.transform.scale(
             self.moving_structure.get_image(), (self.cell_size, self.cell_size)
@@ -100,6 +117,7 @@ class Field:
         return x, y
 
     def get_structure_by_mouse_pos(self, pos):
+        # TODO изменить логику , убого пока
         x, y = self.get_coords_by_mouse_pos(pos)
         # второе условие - проверка на текст слева сверху
         if not (0 <= x < self.width and 0 <= y < self.height) or (x, y) in [(0, 0), (1, 0), (2, 0), (3, 0)]:
@@ -172,39 +190,41 @@ class Field:
                     self.set_moving_structure(None)
                     self.field = [[None] * self.width for _ in range(self.height)]
                     return True
+
                 new_structure_name = key[structure.level + 1]
                 x, y = self.get_coords_by_mouse_pos(self.moving_pos)
                 self.field[y][x] = Mob(new_structure_name, structure.key, structure.level + 1)
                 self.add_animation(x, y, self.cell_size)
+
             elif structure is not None or structure == "error":
                 x, y = self.moving_original_coords
                 self.field[y][x] = self.moving_structure
             else:
                 x, y = self.get_coords_by_mouse_pos(self.moving_pos)
                 self.field[y][x] = self.moving_structure
+
             self.set_moving_structure(None)
             return False
         except Exception as e:
             logging.error(f'Внезапная ошибка! {e}')
 
     def create_mob(self, count=1):
-        y = random.randint(0, self.height - 1)
-        if y == 0:
-            x = -2
-        elif y == 9:
+        y = random.randint(1, self.height - 1)
+        if y == 9:
             x = -3
         else:
             x = -1
-        mob = Stone(x, y)
+        mob = Water(x, y)
         self.field[y][x] = mob
         return mob
 
     def move_mob(self):
         for line in self.field:
             for struct in line:
-                if type(struct) is Stone:
+                if type(struct) is Water:
                     x, y = struct.x, struct.y
                     self.field[y][x] = None
+
                     if x - 1 >= -self.width:
                         self.field[y][x - 1] = struct
                         struct.x -= 1
@@ -216,6 +236,7 @@ class FieldMenu(Field):
                  height: int = 10):
         super().__init__(width, height)
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
+
         self.button_box = ['Start', 'HardLevel', 'DeletUpgrade']
         for x in self.button_box:
             button = Button(x)
@@ -228,6 +249,7 @@ class FieldShop(Field):
                  height: int = 10):
         super().__init__(width, height)
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
+
         self.button_box = ['Menu', 'Start2', 'BuyParam', 'NextParam', 'BackParam']
         for x in self.button_box:
             button = Button(x)
@@ -243,7 +265,9 @@ class FieldShop(Field):
 
     def update_last_scroll(self, _boll: bool):
         # update last_scroll if bool + 1 else bool - 1
+
         self.last_scroll = self.last_scroll + 1 if _boll else self.last_scroll - 1
+
         if self.last_scroll >= len(self.keys_upgrade):
             self.last_scroll = 0
         elif self.last_scroll < 0:
@@ -258,8 +282,11 @@ class FieldEnd(Field):
                  width: int = 10,
                  height: int = 10):
         super().__init__(width, height)
+
         self.field: list[list[Structure | None]] = [[None] * self.width for _ in range(self.height)]
+
         self.button_box = ["Menu"]
         for x in self.button_box:
             button = Button(x)
             self.field[button.y][button.x] = button
+

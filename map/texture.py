@@ -148,6 +148,7 @@ class Mob(Structure):
                 self.count_money = 900
             elif level == 8:
                 self.count_money = 600
+
         super().__init__(image_name)
 
 
